@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://70ctr1yvyqga"]
+
+[ext_resource type="Shader" uid="uid://bspkqifquwtbx" path="res://materials/nearest_pbr.tres" id="1_nskb2"]
+[ext_resource type="Texture2D" uid="uid://ca18t8uh2anio" path="res://textures/texture-test_256.png" id="2_twe70"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_nskb2")
+shader_parameter/uv_scale = Vector2(1, 1)
+shader_parameter/albedo_texture = ExtResource("2_twe70")
+shader_parameter/detail_uv_scale = Vector2(1, 1)
+shader_parameter/detail_strength = 1.0
+shader_parameter/albedo_tint = Color(0.57421535, 0.7302937, 0.7785657, 1)
+shader_parameter/roughness = 1.0
+shader_parameter/specular = 0.0910000043225
+shader_parameter/ao_light_affect = 0.0
+shader_parameter/normal_strength = 0.11500076546250072

@@ -1,0 +1,17 @@
+# Normalize line endings
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+
+# Asset Library / GitHub zip downloads: ship only the addon
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/docs export-ignore
+/tests export-ignore
+/tools export-ignore
+/textures export-ignore
+/materials export-ignore
+/test_scene.tscn export-ignore
+/project.godot export-ignore
+/README.pl.md export-ignore

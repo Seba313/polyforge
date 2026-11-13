@@ -1,0 +1,15 @@
+name: Feature request
+description: A Blender feature or workflow you are missing
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What would you like to do?
+      description: If it exists in Blender, name the tool / shortcut.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it useful in your project?

@@ -1,0 +1,11 @@
+# Godot 4
+.godot/
+/android/
+
+# Working notes (not published)
+PLAN.md
+
+# Misc
+*.bak
+*.tmp
+.DS_Store
