@@ -6,6 +6,8 @@
 @tool
 extends RefCounted
 
+const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
+
 signal finished(committed: bool)
 
 const PRECISION := 0.1
@@ -175,11 +177,11 @@ func draw(ctl: Control) -> void:
 	ctl.draw_dashed_line(ps, _mouse, Color(1, 1, 1, 0.8), 1.0, 6.0)
 	ctl.draw_circle(ps, 3.0, Color(1, 1, 1, 0.9))
 	var name := name_override if name_override != "" else ("Thickness" if kind == "inset" else ("Factor" if kind == "factor" else ("Width" if kind == "width" else "Distance")))
-	var txt := "%s  %s: %.4f%s%s" % [label, name, value, (" [%s|]" % numeric) if not numeric.is_empty() else "", ("  (" + extra + ")") if extra != "" else ""]
+	var txt := "%s  %s: %.4f%s%s" % [PfI18n.t(label), PfI18n.t(name), value, (" [%s|]" % numeric) if not numeric.is_empty() else "", ("  (" + PfI18n.t(extra) + ")") if extra != "" else ""]
 	var pos := Vector2(12, 52)
 	ctl.draw_string_outline(font, pos, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, 6, Color(0, 0, 0, 0.9))
 	ctl.draw_string(font, pos, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color.WHITE)
-	var help := "LMB/Enter: confirm   RMB/Esc: cancel   Ctrl: snap   Shift: precision   type a number" + ("   I: individual" if kind == "inset" else "") + ("   Wheel / PgUp PgDn: segments" if on_wheel.is_valid() else "")
+	var help := PfI18n.t("LMB/Enter: confirm   RMB/Esc: cancel   Ctrl: snap   Shift: precision   type a number") + (PfI18n.t("   I: individual") if kind == "inset" else "") + (PfI18n.t("   Wheel / PgUp PgDn: segments") if on_wheel.is_valid() else "")
 	var hp := Vector2(12, ctl.size.y - 12)
 	ctl.draw_string_outline(font, hp, help, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 5, Color(0, 0, 0, 0.9))
 	ctl.draw_string(font, hp, help, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(1, 1, 1, 0.85))

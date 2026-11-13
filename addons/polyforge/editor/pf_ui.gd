@@ -9,6 +9,7 @@ const PfPrim := preload("res://addons/polyforge/core/pf_primitives.gd")
 const PfKeymap := preload("res://addons/polyforge/editor/pf_keymap.gd")
 const PfOrient := preload("res://addons/polyforge/editor/pf_orient.gd")
 const PfOps2 := preload("res://addons/polyforge/core/pf_ops2.gd")
+const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
 
 const PIVOTS := [["bbox", "Bounding Box Center"], ["cursor", "3D Cursor"], ["median", "Median Point"], ["individual", "Individual Origins"], ["active", "Active Element"]]
 const CONTEXT_ITEMS := [
@@ -115,7 +116,7 @@ func build(p: EditorPlugin) -> void:
 	edit_bar.add_child(VSeparator.new())
 	var mg := ButtonGroup.new()
 	for i in 3:
-		var b := _toggle(["Vertex", "Edge", "Face"][i], "%s select mode (%d)" % [["Vertex", "Edge", "Face"][i], i + 1], mg)
+		var b := _toggle(["Vertex", "Edge", "Face"][i], PfI18n.t(["Vertex select mode (1)", "Edge select mode (2)", "Face select mode (3)"][i]), mg)
 		var mode := i + 1
 		b.toggled.connect(func(on): if on and not _syncing: plugin.run_action("set_mode", mode))
 		mode_btns.append(b)
@@ -168,7 +169,7 @@ func build(p: EditorPlugin) -> void:
 	pp.add_check_item("Connected Only", 101)
 	pp.add_separator("Mesh Symmetry")
 	for a in 3:
-		pp.add_check_item("Mirror %s" % "XYZ"[a], 200 + a)
+		pp.add_check_item(PfI18n.t("Mirror %s") % "XYZ"[a], 200 + a)
 	pp.add_separator("Falloff")
 	for i in FALLOFFS.size():
 		pp.add_radio_check_item(FALLOFFS[i][1], i)
@@ -289,6 +290,7 @@ func build(p: EditorPlugin) -> void:
 	for n in [menu_btn, edit_bar, context_menu, pivot_menu, orient_menu, op_menu, add_menu, mat_panel, search_popup, merge_dist_dialog, density_dialog, settings_dialog]:
 		if n != null:
 			n.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+			PfI18n.localize(n)
 
 func teardown() -> void:
 	if menu_btn:
@@ -332,14 +334,14 @@ func sync() -> void:
 		for a in 3:
 			if bool(plugin.settings.get_pref("mirror_axes")[a]):
 				sym += "XYZ"[a]
-		prop_btn.text = ("Proportional: On" if on else "Proportional") + (" · Mirror " + sym if sym != "" else "")
+		prop_btn.text = PfI18n.t("Proportional: On" if on else "Proportional") + (" · %s " % PfI18n.t("Mirror") + sym if sym != "" else "")
 		pp.set_item_checked(pp.get_item_index(100), on)
 		pp.set_item_checked(pp.get_item_index(101), bool(plugin.settings.get_pref("prop_connected")))
 		for i in FALLOFFS.size():
 			pp.set_item_checked(pp.get_item_index(i), FALLOFFS[i][0] == plugin.settings.get_pref("prop_falloff"))
 		var son := bool(plugin.settings.get_pref("snap_on"))
 		var stg := str(plugin.settings.get_pref("snap_target"))
-		snap_btn.text = "Snap: %s" % stg.capitalize() if son else "Snap"
+		snap_btn.text = PfI18n.t("Snap: %s") % PfI18n.t(stg.capitalize()) if son else PfI18n.t("Snap")
 		snap_btn.get_popup().set_item_checked(snap_btn.get_popup().get_item_index(100), son)
 		for i in SNAP_TARGETS.size():
 			snap_btn.get_popup().set_item_checked(snap_btn.get_popup().get_item_index(i), SNAP_TARGETS[i][0] == stg)
@@ -377,8 +379,8 @@ func sync() -> void:
 				if is_equal_approx(td, DENSITIES[i]):
 					id = i + 1
 		density_popup.set_item_checked(density_popup.get_item_index(id), true)
-		density_popup.set_item_text(density_popup.get_item_index(0), "Project default (%d px/m)" % plugin.settings.project_texel_density())
-		density_popup.set_item_text(density_popup.get_item_index(9), "Custom… (%d px/m)" % td if id == 9 else "Custom…")
+		density_popup.set_item_text(density_popup.get_item_index(0), PfI18n.t("Project default (%d px/m)") % plugin.settings.project_texel_density())
+		density_popup.set_item_text(density_popup.get_item_index(9), PfI18n.t("Custom… (%d px/m)") % td if id == 9 else PfI18n.t("Custom…"))
 	_syncing = false
 
 func _on_proportional(id: int) -> void:
@@ -494,10 +496,10 @@ func _fill_materials() -> void:
 	mat_list.clear()
 	for i in n:
 		var mat: Material = m.materials[i] if i < m.materials.size() else null
-		var label := "(empty)"
+		var label := PfI18n.t("(empty)")
 		if mat != null:
 			label = mat.resource_name if mat.resource_name != "" else (mat.resource_path.get_file() if mat.resource_path != "" else mat.get_class())
-		mat_list.add_item("%d: %s  ·  %d faces" % [i, label, used.get(i, 0)])
+		mat_list.add_item(PfI18n.t("%d: %s  ·  %d faces") % [i, label, used.get(i, 0)])
 	mat_list.select(plugin.active_slot)
 	mat_picker.edited_resource = m.materials[plugin.active_slot] if plugin.active_slot < m.materials.size() else null
 
@@ -515,12 +517,12 @@ func any_popup_open() -> bool:
 ## Operator menu: items = [[label, action, arg], ["-"], ...] (Blender menus).
 func popup_ops(title: String, items: Array, screen_pos: Vector2) -> void:
 	op_menu.clear()
-	op_menu.add_separator(title)
+	op_menu.add_separator(PfI18n.t(title))
 	for it in items:
 		if it[0] == "-":
 			op_menu.add_separator()
 			continue
-		op_menu.add_item(it[0])
+		op_menu.add_item(PfI18n.t(it[0]))
 		var i := op_menu.item_count - 1
 		op_menu.set_item_metadata(i, [it[1], it[2] if it.size() > 2 else null])
 		if it.size() > 3 and it[3] == false:
@@ -554,8 +556,9 @@ func _fill_search() -> void:
 	search_list.clear()
 	var q := search_edit.text.strip_edges().to_lower()
 	for op in plugin.search_operators():
-		if q == "" or (op[0] as String).to_lower().contains(q):
-			search_list.add_item(op[0])
+		var label := PfI18n.t(op[0])
+		if q == "" or (op[0] as String).to_lower().contains(q) or label.to_lower().contains(q):
+			search_list.add_item(label)
 			search_list.set_item_metadata(search_list.item_count - 1, op)
 	if search_list.item_count > 0:
 		search_list.select(0)
@@ -690,22 +693,22 @@ func _save_settings() -> void:
 
 func _show_shortcuts() -> void:
 	var d := AcceptDialog.new()
-	d.title = "Polyforge shortcuts"
+	d.title = PfI18n.t("Polyforge shortcuts")
 	var t := RichTextLabel.new()
 	t.custom_minimum_size = Vector2(520, 480)
 	t.bbcode_enabled = true
-	var txt := "[b]Always (3D viewport)[/b]\n"
+	var txt := PfI18n.t("[b]Always (3D viewport)[/b]\n")
 	for a in PfKeymap.GLOBAL:
-		txt += "%s   —   %s\n" % [PfKeymap.text_of(PfKeymap.GLOBAL, a), PfKeymap.LABELS.get(a, a)]
-	txt += "\n[b]Edit Mode[/b]\n"
+		txt += "%s   —   %s\n" % [PfKeymap.text_of(PfKeymap.GLOBAL, a), PfI18n.t(PfKeymap.LABELS.get(a, a))]
+	txt += PfI18n.t("\n[b]Edit Mode[/b]\n")
 	for a in PfKeymap.EDIT:
-		txt += "%s   —   %s\n" % [PfKeymap.text_of(PfKeymap.EDIT, a), PfKeymap.LABELS.get(a, a)]
-	txt += "Click / Shift+click — select / extend   Alt+click — loop   Ctrl+Alt+click — ring\n"
-	txt += "LMB drag — box select (Shift: extend, Ctrl: subtract)   Right click — context menu (hold: fly)\n"
-	txt += "\n[b]Object Mode (optional, Settings)[/b]\n"
+		txt += "%s   —   %s\n" % [PfKeymap.text_of(PfKeymap.EDIT, a), PfI18n.t(PfKeymap.LABELS.get(a, a))]
+	txt += PfI18n.t("Click / Shift+click — select / extend   Alt+click — loop   Ctrl+Alt+click — ring\n")
+	txt += PfI18n.t("LMB drag — box select (Shift: extend, Ctrl: subtract)   Right click — context menu (hold: fly)\n")
+	txt += PfI18n.t("\n[b]Object Mode (optional, Settings)[/b]\n")
 	var km: Dictionary = plugin.settings.get_pref("object_keymap")
 	for a in PfKeymap.OBJECT:
-		txt += "%s   —   %s\n" % [PfKeymap.text_of(PfKeymap.OBJECT, a, km), PfKeymap.LABELS.get(a, a)]
+		txt += "%s   —   %s\n" % [PfKeymap.text_of(PfKeymap.OBJECT, a, km), PfI18n.t(PfKeymap.LABELS.get(a, a))]
 	t.text = txt
 	d.add_child(t)
 	d.confirmed.connect(d.queue_free)

@@ -229,6 +229,12 @@ poprzedniego), wybór materiału dla aktywnego slotu, *Assign* przypisuje go zaz
   - Wszystko z Undo (`Ctrl+Z`). Panel `F9`: Smart UV Project (Angle Limit), Cube Projection
     (Cube Size), Lightmap Pack (Margin), Pack Islands (Margin, Rotate), Texel Density.
 
+## Tłumaczenia
+
+Polyforge używa języka edytora (*Editor Settings → Interface → Editor → Editor Language*).
+Dołączony jest język polski; przy innych językach interfejs jest po angielsku. Nowy język to plik
+`addons/polyforge/i18n/<kod języka>.po` z angielskimi tekstami jako `msgid` (wzór: `pl.po`).
+
 ## Ustawienia
 
 *Polyforge → Settings…*: kolor i grubość ramki, Right Click Select, krok przyciągania,

@@ -18,6 +18,7 @@ extends RefCounted
 const PfUv := preload("res://addons/polyforge/core/pf_uv.gd")
 const PfSelect := preload("res://addons/polyforge/core/pf_select.gd")
 const PfBvh := preload("res://addons/polyforge/core/pf_bvh.gd")
+const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
 
 enum Mode { MOVE, ROTATE, SCALE, SLIDE }
 enum Target { ELEMENTS, OBJECTS }
@@ -796,9 +797,9 @@ func _update() -> void:
 	var space := _alt_name if local_space else orient_name
 	var con := ""
 	if constraint == Constraint.AXIS:
-		con = " along %s %s" % [space, AXIS_NAMES[axis]]
+		con = PfI18n.t(" along %s %s") % [PfI18n.t(space.capitalize()), AXIS_NAMES[axis]]
 	elif constraint == Constraint.PLANE:
-		con = " locking %s %s" % [space, AXIS_NAMES[axis]]
+		con = PfI18n.t(" locking %s %s") % [PfI18n.t(space.capitalize()), AXIS_NAMES[axis]]
 	var num_txt := (" [%s|]" % numeric) if not numeric.is_empty() else ""
 	var basis := Basis.IDENTITY
 	match mode:
@@ -807,14 +808,14 @@ func _update() -> void:
 			xf = Transform3D(Basis.IDENTITY, t)
 			var shown := _frame().inverse() * t
 			if constraint == Constraint.AXIS:
-				_readout = "Move  D: %.4f%s%s" % [shown[axis], num_txt, con]
+				_readout = PfI18n.t("Move  D: %.4f%s%s") % [shown[axis], num_txt, con]
 			else:
-				_readout = "Move  Dx: %.4f  Dy: %.4f  Dz: %.4f%s%s" % [shown.x, shown.y, shown.z, num_txt, con]
+				_readout = PfI18n.t("Move  Dx: %.4f  Dy: %.4f  Dz: %.4f%s%s") % [shown.x, shown.y, shown.z, num_txt, con]
 		Mode.ROTATE:
 			var r := _compute_rotation()
 			basis = Basis(r[0], r[1])
 			xf = Transform3D(basis, _pivot - basis * _pivot)
-			_readout = "Rotate  %.2f°%s%s" % [rad_to_deg(r[1]), num_txt, con if constraint != Constraint.NONE else " (view axis)"]
+			_readout = PfI18n.t("Rotate  %.2f°%s%s") % [rad_to_deg(r[1]), num_txt, con if constraint != Constraint.NONE else PfI18n.t(" (view axis)")]
 		Mode.SCALE:
 			var f := _compute_scale()
 			var sv := Vector3.ONE * f
@@ -826,9 +827,9 @@ func _update() -> void:
 			var fr := _frame()
 			basis = fr * Basis.from_scale(sv) * fr.inverse()
 			xf = Transform3D(basis, _pivot - basis * _pivot)
-			_readout = "Scale  %.4f%s%s" % [f, num_txt, con]
+			_readout = PfI18n.t("Scale  %.4f%s%s") % [f, num_txt, con]
 	if not _prop_dist.is_empty():
-		_readout += "  Proportional size: %.3f" % prop_size
+		_readout += PfI18n.t("  Proportional size: %.3f") % prop_size
 	current_xf = xf
 	_apply(xf, basis)
 
@@ -904,7 +905,7 @@ func _prepare_slide() -> void:
 		if sp.distance_to(_start_mouse) < best:
 			best = sp.distance_to(_start_mouse)
 			_slide_ref = v
-	_readout = "Vertex Slide  (move the mouse along an edge)"
+	_readout = PfI18n.t("Vertex Slide  (move the mouse along an edge)")
 
 func _pick_slide_targets(screen_dir: Vector2) -> void:
 	var m = _s.mesh
@@ -970,7 +971,7 @@ func _update_slide() -> void:
 	if not _uv_records.is_empty():
 		PfUv.apply(_s.mesh, _uv_records)
 	_s.rebuild(true)
-	_readout = "Vertex Slide  Factor: %.4f%s" % [t, (" [%s|]" % numeric) if not numeric.is_empty() else ""]
+	_readout = PfI18n.t("Vertex Slide  Factor: %.4f%s") % [t, (" [%s|]" % numeric) if not numeric.is_empty() else ""]
 
 
 # ==============================================================================
@@ -1011,8 +1012,8 @@ func draw(overlay: Control) -> void:
 	overlay.draw_string_outline(font, pos, _readout, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, 6, Color(0, 0, 0, 0.9))
 	overlay.draw_string(font, pos, _readout, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color.WHITE)
 	var hp := Vector2(12, overlay.size.y - 12)
-	overlay.draw_string_outline(font, hp, HELP, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 5, Color(0, 0, 0, 0.9))
-	overlay.draw_string(font, hp, HELP, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(1, 1, 1, 0.85))
+	overlay.draw_string_outline(font, hp, PfI18n.t(HELP), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 5, Color(0, 0, 0, 0.9))
+	overlay.draw_string(font, hp, PfI18n.t(HELP), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(1, 1, 1, 0.85))
 
 static func _clip(p: Vector3, anchor: Vector3, cam_pos: Vector3, cam_fwd: Vector3, near: float) -> Vector3:
 	var dp := (p - cam_pos).dot(cam_fwd)

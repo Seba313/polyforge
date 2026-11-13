@@ -11,6 +11,7 @@
 @tool
 extends Control
 
+const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
 const PfUv := preload("res://addons/polyforge/core/pf_uv.gd")
 const PfUvOps := preload("res://addons/polyforge/core/pf_uvops.gd")
 const PfSelect := preload("res://addons/polyforge/core/pf_select.gd")
@@ -122,6 +123,7 @@ func _ready() -> void:
 	cp.focus_mode = Control.FOCUS_NONE
 	cp.pressed.connect(func(): plugin.run_action("uv_copy_to_uv2"))
 	_bar.add_child(cp)
+	PfI18n.localize(_bar)
 
 func set_pivot(kind: String) -> void:
 	pivot_mode = kind
@@ -749,12 +751,12 @@ func _draw() -> void:
 		draw_line(uv_to_screen(Vector2(t, 0)), uv_to_screen(Vector2(t, 1)), c)
 		draw_line(uv_to_screen(Vector2(0, t)), uv_to_screen(Vector2(1, t)), c)
 	var font := get_theme_default_font()
-	var hint := "U unwrap  G R S  A  L  P pin  V stitch  Y split  Shift+S snap  Shift+RMB cursor  Ctrl+P pack"
+	var hint := PfI18n.t("U unwrap  G R S  A  L  P pin  V stitch  Y split  Shift+S snap  Shift+RMB cursor  Ctrl+P pack")
 	if session != null and session.mesh != null:
 		var m = session.mesh
 		var faces := visible_faces()
 		if faces.is_empty():
-			hint = "Select faces in the 3D view to edit their UVs (or turn on Sync)"
+			hint = PfI18n.t("Select faces in the 3D view to edit their UVs (or turn on Sync)")
 		for f in faces:
 			var uv := _uv(f)
 			if uv.size() < 2:
@@ -785,9 +787,9 @@ func _draw() -> void:
 		draw_rect(br, Color(1, 1, 1, 0.08))
 		draw_rect(br, Color(1, 1, 1, 0.8), false)
 	if not _tm.is_empty():
-		var txt := "UV %s  %s" % [(_tm["mode"] as String).capitalize(), ("[%s|]" % _tm["numeric"]) if _tm["numeric"] != "" else ""]
+		var txt := "UV %s  %s" % [PfI18n.t((_tm["mode"] as String).capitalize()), ("[%s|]" % _tm["numeric"]) if _tm["numeric"] != "" else ""]
 		if _tm["axis"] >= 0:
-			txt += "  along " + ["U", "V"][_tm["axis"]]
+			txt += PfI18n.t("  along %s") % ["U", "V"][_tm["axis"]]
 		draw_string(font, Vector2(8, 50), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
 	draw_string(font, Vector2(8, size.y - 8), hint, HORIZONTAL_ALIGNMENT_LEFT, size.x - 16, 12, Color(1, 1, 1, 0.7))
 	if session != null and plugin != null:

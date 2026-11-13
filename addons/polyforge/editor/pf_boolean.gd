@@ -4,6 +4,7 @@
 @tool
 extends RefCounted
 
+const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
 const PfBuild := preload("res://addons/polyforge/core/pf_build.gd")
 const PfOps2 := preload("res://addons/polyforge/core/pf_ops2.gd")
 
@@ -16,7 +17,7 @@ static func compute(host: Node, base, cutters: Array, op: String) -> Dictionary:
 	for c in cutters:
 		open += PfOps2.open_edges(c)
 	if open > 0:
-		return {"error": "Boolean needs closed meshes (%d open edge(s))" % open}
+		return {"error": PfI18n.t("Boolean needs closed meshes (%d open edge(s))") % open}
 	var comb := CSGCombiner3D.new()
 	host.add_child(comb)
 	var a := CSGMesh3D.new()

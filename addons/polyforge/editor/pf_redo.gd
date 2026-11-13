@@ -5,6 +5,8 @@
 @tool
 extends RefCounted
 
+const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
+
 var label := ""
 var params: Array = []        # [{key, label, type: "float"/"int"/"bool", value, min, max}]
 var run: Callable = Callable() # (values: Dictionary) -> void, from the state before, commits
@@ -92,7 +94,7 @@ func show_in(host: Control) -> void:
 	var head := Button.new()
 	head.flat = true
 	head.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	head.text = ("▸ " if _collapsed else "▾ ") + label
+	head.text = ("▸ " if _collapsed else "▾ ") + PfI18n.t(label)
 	head.focus_mode = Control.FOCUS_NONE
 	v.add_child(head)
 	var grid := GridContainer.new()
@@ -102,12 +104,12 @@ func show_in(host: Control) -> void:
 	head.pressed.connect(func():
 		_collapsed = not _collapsed
 		grid.visible = not _collapsed
-		head.text = ("▸ " if _collapsed else "▾ ") + label
+		head.text = ("▸ " if _collapsed else "▾ ") + PfI18n.t(label)
 		panel.reset_size()
 		_place())
 	for p in params:
 		var l := Label.new()
-		l.text = p["label"]
+		l.text = PfI18n.t(p["label"])
 		grid.add_child(l)
 		var key: String = p["key"]
 		match p["type"]:

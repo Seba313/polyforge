@@ -27,6 +27,7 @@ const PfLocalView := preload("res://addons/polyforge/editor/pf_local_view.gd")
 const PfUvPanel := preload("res://addons/polyforge/editor/pf_uv_panel.gd")
 const PfSaveGuard := preload("res://addons/polyforge/editor/pf_save_guard.gd")
 const PfShape := preload("res://addons/polyforge/core/pf_shape.gd")
+const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
 const PfOrient := preload("res://addons/polyforge/editor/pf_orient.gd")
 const PfGizmo := preload("res://addons/polyforge/editor/pf_gizmo.gd")
 const PfOps := preload("res://addons/polyforge/core/pf_ops.gd")
@@ -227,7 +228,7 @@ func _on_scene_changed(_root: Node) -> void:
 		update_overlays()
 
 func msg(text: String, seconds := 3.0) -> void:
-	_message = text
+	_message = PfI18n.t(text)
 	_message_until = Time.get_ticks_msec() + int(seconds * 1000.0)
 	update_overlays()
 
@@ -249,7 +250,7 @@ func _shape_edit_mesh(cs: CollisionShape3D):
 		msg("This CollisionShape3D has no shape")
 		return null
 	if not PfShape.supports(cs.shape):
-		msg("Only ConvexPolygonShape3D and ConcavePolygonShape3D can be edited (%s has its own handles)" % cs.shape.get_class(), 5.0)
+		msg(PfI18n.t("Only ConvexPolygonShape3D and ConcavePolygonShape3D can be edited (%s has its own handles)") % cs.shape.get_class(), 5.0)
 		return null
 	var m = PfShape.read(cs.shape)
 	if m == null:
@@ -940,7 +941,7 @@ func run_action(action: String, arg: Variant = null) -> void:
 			_begin_element_modal({"grab": PfModal.Mode.MOVE, "rotate": PfModal.Mode.ROTATE, "scale": PfModal.Mode.SCALE}[action])
 		"proportional", "prop_connected":
 			settings.set_pref(action, not bool(settings.get_pref(action)) if arg == null else bool(arg))
-			msg("Proportional Editing: %s" % ("on" if settings.get_pref("proportional") else "off"))
+			msg(PfI18n.t("Proportional Editing: on" if settings.get_pref("proportional") else "Proportional Editing: off"))
 			ui.sync()
 		"prop_falloff_menu":
 			var items := []
@@ -962,7 +963,7 @@ func run_action(action: String, arg: Variant = null) -> void:
 			ui.sync()
 		"snap_toggle":
 			settings.set_pref("snap_on", not bool(settings.get_pref("snap_on")))
-			msg("Snapping: %s (%s)" % ["on" if settings.get_pref("snap_on") else "off", settings.get_pref("snap_target")])
+			msg(PfI18n.t("Snapping: on (%s)" if settings.get_pref("snap_on") else "Snapping: off (%s)") % PfI18n.t(str(settings.get_pref("snap_target")).capitalize()))
 			ui.sync()
 		"snap_target_menu":
 			var items := []
@@ -1024,7 +1025,7 @@ func run_action(action: String, arg: Variant = null) -> void:
 			if session.mesh.world_uv:
 				PfUv.cube_project_world(session.mesh, settings.density_for(session.mesh))
 			session.commit_undo("World-Scale UV", before)
-			msg("World-Scale UV %s" % ("on: UVs projected at %d px/m" % settings.density_for(session.mesh) if bool(arg) else "off"))
+			msg(PfI18n.t("World-Scale UV on: UVs projected at %d px/m") % settings.density_for(session.mesh) if bool(arg) else PfI18n.t("World-Scale UV off"))
 		"texel_density":
 			before = session.snapshot()
 			session.mesh.texel_density = float(arg)
@@ -1329,9 +1330,9 @@ func _op(label: String, fn: Callable) -> void:
 		if session.mesh.faces.is_empty():
 			msg("Collision shape is empty — it no longer collides with anything", 5.0)
 		elif open > PfOps2.open_edges(_mesh_of(before)):
-			msg("Collision shape has %d open edges — bodies can pass through the holes" % open, 5.0)
+			msg(PfI18n.t("Collision shape has %d open edges — bodies can pass through the holes") % open, 5.0)
 	if r.has("removed"):
-		msg("Removed %d vertices" % int(r["removed"]))
+		msg(PfI18n.t("Removed %d vertices") % int(r["removed"]))
 
 ## Convex shapes need a 3D hull (else Godot physics: "Failed to build convex hull").
 func _shape_check() -> String:
@@ -1745,7 +1746,7 @@ func _loopcut_input(camera: Camera3D, event: InputEvent) -> int:
 
 func _draw_loopcut(vc: Control) -> void:
 	var font := vc.get_theme_default_font()
-	var hint := "Loop Cut: hover an edge, wheel / PgUp PgDn: number of cuts (%d), LMB: cut then slide, RMB / Esc: cancel" % int(_lc["cuts"])
+	var hint := PfI18n.t("Loop Cut: hover an edge, wheel / PgUp PgDn: number of cuts (%d), LMB: cut then slide, RMB / Esc: cancel") % int(_lc["cuts"])
 	_label(vc, font, hint, vc.size.y - 18.0, Color(1, 1, 1, 0.85), 12)
 	if _lc["edge"] == null or _camera == null:
 		return
@@ -1827,10 +1828,10 @@ func _bevel(verts_only: bool) -> void:
 			session.restore(pre)
 			if build.call():
 				sel_after.call()
-				vmodal.extra = "Segments: %d" % int(st["seg"])
+				vmodal.extra = PfI18n.t("Segments: %d") % int(st["seg"])
 			else:
 				session.restore(keep)
-		vmodal.extra = "Segments: 1"
+		vmodal.extra = PfI18n.t("Segments: %d") % 1
 
 ## P: selected faces / loose parts / material groups become new objects.
 func _separate(kind: String) -> void:
@@ -1878,7 +1879,7 @@ func _separate(kind: String) -> void:
 		ur.add_do_reference(mi)
 		ur.add_undo_method(parent, "remove_child", mi)
 	ur.commit_action()
-	msg("Separated %d part(s) into new object(s)" % new_nodes.size())
+	msg(PfI18n.t("Separated %d part(s) into new object(s)") % new_nodes.size())
 
 ## Edit data of a MeshInstance3D (Polyforge mesh or supported primitive).
 func _read_pf(mi: MeshInstance3D):
@@ -1929,7 +1930,7 @@ func _join_objects() -> void:
 	var sel := EditorInterface.get_selection()
 	sel.clear()
 	sel.add_node(target)
-	msg("Joined %d object(s)" % (meshes.size() - 1))
+	msg(PfI18n.t("Joined %d object(s)") % (meshes.size() - 1))
 
 ## Boolean in Object Mode: the active (last selected) mesh is changed by the
 ## others; the cutters stay as they are (like Blender's applied modifier).
@@ -1961,7 +1962,7 @@ func _boolean_objects(op: String) -> void:
 	ur.add_do_property(target, "mesh", PfBuild.build(r["mesh"]))
 	ur.add_undo_property(target, "mesh", target.mesh)
 	ur.commit_action()
-	msg("Boolean %s done" % op)
+	msg(PfI18n.t("Boolean %s done") % op)
 
 ## Edit Mode "Intersect (Boolean)": selected faces cut / join the rest.
 func _boolean_edit(op: String) -> void:
@@ -1990,7 +1991,7 @@ func _boolean_edit(op: String) -> void:
 	session.mesh.from_dict(r["mesh"].to_dict())
 	session.set_selection_result({})
 	session.commit_undo("Intersect (Boolean)", pre)
-	msg("Boolean %s done" % op)
+	msg(PfI18n.t("Boolean %s done") % op)
 
 ## U menu operators on the faces selected in 3D, channel of the UV editor.
 func _uv_op(kind: String, p := {}) -> void:
@@ -2282,10 +2283,10 @@ func _save_mesh_as(path: String) -> void:
 	session.rebuild(false)
 	var err := ResourceSaver.save(session.amesh, path)
 	if err != OK:
-		msg("Could not save %s (error %d)" % [path, err])
+		msg(PfI18n.t("Could not save %s (error %d)") % [path, err])
 		return
 	session.amesh.take_over_path(path)
-	msg("Mesh saved to %s" % path)
+	msg(PfI18n.t("Mesh saved to %s") % path)
 
 func _uv_panel_key(k: InputEventKey) -> bool:
 	var a := PfKeymap.find(PfKeymap.EDIT, k)
@@ -2311,15 +2312,15 @@ func _forward_3d_draw_over_viewport(vc: Control) -> void:
 		var joined: bool = uv_panel.is_visible_in_tree() and absf(vc.get_global_rect().position.x - uv_panel.get_global_rect().end.x) < 40.0
 		if not joined:
 			vc.draw_rect(Rect2(0, 0, w, vc.size.y), col)
-		var label := "EDIT MODE · %s" % MODE_NAMES[session.mode]
+		var label := PfI18n.t("EDIT MODE · %s") % PfI18n.t(MODE_NAMES[session.mode])
 		if session.is_shape():
-			label += " · %s Collision Shape" % session.kind.capitalize()
+			label += " · " + PfI18n.t("%s Collision Shape") % PfI18n.t(session.kind.capitalize())
 		if session.is_multi():
-			label += " · %d objects" % session.members.size()
+			label += " · " + PfI18n.t("%d objects") % session.members.size()
 		if session.xray:
 			label += " · X-Ray"
 		if tab == 1:
-			label += " · UV Edit"
+			label += " · " + PfI18n.t("UV Edit")
 		_label(vc, font, label, top, col)
 		top += 22.0
 	if session != null:
@@ -2332,7 +2333,7 @@ func _forward_3d_draw_over_viewport(vc: Control) -> void:
 		for d in [Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN]:
 			vc.draw_line(c + d * r * 0.5, c + d * r * 1.6, Color.BLACK, 1.0)
 	if local_view.active:
-		_label(vc, font, "LOCAL VIEW", top, Color(0.7, 0.85, 1.0))
+		_label(vc, font, PfI18n.t("LOCAL VIEW"), top, Color(0.7, 0.85, 1.0))
 		top += 22.0
 	if _message != "":
 		_label(vc, font, _message, vc.size.y - 40.0, Color(1, 0.9, 0.6))
@@ -2340,8 +2341,8 @@ func _forward_3d_draw_over_viewport(vc: Control) -> void:
 		vc.draw_rect(_box_rect, Color(1, 1, 1, 0.08), true)
 		vc.draw_rect(_box_rect, Color(1, 1, 1, 0.8), false, 1.0)
 	if _region != "":
-		var hint := "Box Select: drag LMB (MMB / Shift: deselect)   RMB / Esc: cancel" if _region == "box" \
-			else "Circle Select: LMB paint, MMB / Shift: deselect, wheel: radius   RMB / Esc / Enter: done"
+		var hint := PfI18n.t("Box Select: drag LMB (MMB / Shift: deselect)   RMB / Esc: cancel" if _region == "box" \
+			else "Circle Select: LMB paint, MMB / Shift: deselect, wheel: radius   RMB / Esc / Enter: done")
 		_label(vc, font, hint, vc.size.y - 18.0, Color(1, 1, 1, 0.85), 12)
 		if _region == "circle":
 			vc.draw_arc(_mouse, _circle_radius, 0, TAU, 48, Color(1, 1, 1, 0.9), 1.0, true)
@@ -2370,10 +2371,10 @@ func _draw_text_overlays(vc: Control, font: Font) -> void:
 		var tris := 0
 		for f in m.faces:
 			tris += f.size() - 2
-		var lines := ["Vertices  %d / %d" % [session.selected_verts().size(), m.verts.size()],
-			"Edges  %d / %d" % [session.selected_edges().size(), m.edges().size()],
-			"Faces  %d / %d" % [session.selected_faces().size(), m.faces.size()],
-			"Triangles  %d" % tris]
+		var lines := [PfI18n.t("Vertices  %d / %d") % [session.selected_verts().size(), m.verts.size()],
+			PfI18n.t("Edges  %d / %d") % [session.selected_edges().size(), m.edges().size()],
+			PfI18n.t("Faces  %d / %d") % [session.selected_faces().size(), m.faces.size()],
+			PfI18n.t("Triangles  %d") % tris]
 		for i in lines.size():
 			var p := Vector2(12, 84 + i * 16)
 			vc.draw_string_outline(font, p, lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 4, Color(0, 0, 0, 0.85))

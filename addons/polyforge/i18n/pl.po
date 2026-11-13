@@ -1,0 +1,1382 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: pl\n"
+
+msgid "\n[b]Edit Mode[/b]\n"
+msgstr "\n[b]Tryb edycji[/b]\n"
+
+msgid "\n[b]Object Mode (optional, Settings)[/b]\n"
+msgstr "\n[b]Tryb obiektowy (opcjonalnie, Ustawienia)[/b]\n"
+
+msgid "   I: individual"
+msgstr "   I: osobno"
+
+msgid "   Wheel / PgUp PgDn: segments"
+msgstr "   Kółko / PgUp PgDn: segmenty"
+
+msgid "  Proportional size: %.3f"
+msgstr "  Zasięg proporcjonalny: %.3f"
+
+msgid "  along %s"
+msgstr "  wzdłuż %s"
+
+msgid " (view axis)"
+msgstr " (oś widoku)"
+
+msgid " along %s %s"
+msgstr " wzdłuż %s %s"
+
+msgid " locking %s %s"
+msgstr " z blokadą %s %s"
+
+msgid "%d objects"
+msgstr "obiekty: %d"
+
+msgid "%d vertex(es) ended up inside the convex hull and were removed"
+msgstr "Wierzchołki wewnątrz otoczki wypukłej zostały usunięte: %d"
+
+msgid "%d: %s  ·  %d faces"
+msgstr "%d: %s  ·  ścian: %d"
+
+msgid "%s Collision Shape"
+msgstr "Kształt kolizji %s"
+
+msgid "(empty)"
+msgstr "(pusty)"
+
+msgid "2D Cursor"
+msgstr "Kursor 2D"
+
+msgid "3D Cursor"
+msgstr "Kursor 3D"
+
+msgid "Active Element"
+msgstr "Aktywny element"
+
+msgid "Add Circle"
+msgstr "Dodaj okrąg"
+
+msgid "Add Cone"
+msgstr "Dodaj stożek"
+
+msgid "Add Cube"
+msgstr "Dodaj sześcian"
+
+msgid "Add Cylinder"
+msgstr "Dodaj walec"
+
+msgid "Add Grid"
+msgstr "Dodaj siatkę"
+
+msgid "Add Ico Sphere"
+msgstr "Dodaj ikosferę"
+
+msgid "Add Material Slot"
+msgstr "Dodaj slot materiału"
+
+msgid "Add Mesh"
+msgstr "Dodaj siatkę"
+
+msgid "Add Mesh (Shift+A)"
+msgstr "Dodaj siatkę (Shift+A)"
+
+msgid "Add Plane"
+msgstr "Dodaj płaszczyznę"
+
+msgid "Add Torus"
+msgstr "Dodaj torus"
+
+msgid "Add UV Sphere"
+msgstr "Dodaj sferę UV"
+
+msgid "Adjust Last Operation"
+msgstr "Dostosuj ostatnią operację"
+
+msgid "Amount of Adjacent Faces"
+msgstr "Liczba sąsiednich ścian"
+
+msgid "Amount of Connecting Edges"
+msgstr "Liczba połączonych krawędzi"
+
+msgid "Amount of Faces Around an Edge"
+msgstr "Liczba ścian wokół krawędzi"
+
+msgid "Angle Limit"
+msgstr "Limit kąta"
+
+msgid "Area"
+msgstr "Pole"
+
+msgid "Assign"
+msgstr "Przypisz"
+
+msgid "Assign Material"
+msgstr "Przypisz materiał"
+
+msgid "At Center"
+msgstr "W środku"
+
+msgid "At First"
+msgstr "W pierwszym"
+
+msgid "At First / At Last need vertices selected one by one (vertex mode)"
+msgstr "W pierwszym / W ostatnim wymaga wierzchołków zaznaczanych po kolei (tryb wierzchołków)"
+
+msgid "At Last"
+msgstr "W ostatnim"
+
+msgid "Average Islands Scale"
+msgstr "Wyrównaj skalę wysp"
+
+msgid "Bevel"
+msgstr "Fazuj"
+
+msgid "Bevel Edges"
+msgstr "Fazuj krawędzie"
+
+msgid "Bevel Vertices"
+msgstr "Fazuj wierzchołki"
+
+msgid "Binary resource"
+msgstr "Zasób binarny"
+
+msgid "Boolean"
+msgstr "Boolean"
+
+msgid "Boolean %s done"
+msgstr "Boolean %s gotowe"
+
+msgid "Boolean (active ← others)"
+msgstr "Boolean (aktywny ← pozostałe)"
+
+msgid "Boolean between objects works in Object Mode"
+msgstr "Boolean między obiektami działa w trybie obiektowym"
+
+msgid "Boolean menu"
+msgstr "Menu Boolean"
+
+msgid "Boolean needs closed meshes (%d open edge(s))"
+msgstr "Boolean wymaga zamkniętych siatek (otwarte krawędzie: %d)"
+
+msgid "Boolean result is empty"
+msgstr "Wynik operacji Boolean jest pusty"
+
+msgid "Bounding Box Center"
+msgstr "Środek prostopadłościanu otaczającego"
+
+msgid "Box Select"
+msgstr "Zaznaczanie prostokątem"
+
+msgid "Box Select: drag LMB (MMB / Shift: deselect)   RMB / Esc: cancel"
+msgstr "Zaznaczanie prostokątem: przeciągnij LPM (ŚPM / Shift: odznacz)   PPM / Esc: anuluj"
+
+msgid "By Distance…"
+msgstr "Według odległości…"
+
+msgid "By Loose Parts"
+msgstr "Według luźnych części"
+
+msgid "By Material"
+msgstr "Według materiału"
+
+msgid "Cannot separate everything (nothing would be left)"
+msgstr "Nie można rozdzielić wszystkiego (nic by nie zostało)"
+
+msgid "Circle"
+msgstr "Okrąg"
+
+msgid "Circle Select"
+msgstr "Zaznaczanie okręgiem"
+
+msgid "Circle Select: LMB paint, MMB / Shift: deselect, wheel: radius   RMB / Esc / Enter: done"
+msgstr "Zaznaczanie okręgiem: LPM maluje, ŚPM / Shift: odznacza, kółko: promień   PPM / Esc / Enter: koniec"
+
+msgid "Clear Seam"
+msgstr "Usuń szew"
+
+msgid "Clear Sharp"
+msgstr "Usuń ostrość"
+
+msgid "Click / Shift+click — select / extend   Alt+click — loop   Ctrl+Alt+click — ring\n"
+msgstr "Klik / Shift+klik — zaznacz / dodaj   Alt+klik — pętla   Ctrl+Alt+klik — pierścień\n"
+
+msgid "Co-planar"
+msgstr "Współpłaszczyznowe"
+
+msgid "Collapse"
+msgstr "Zwiń"
+
+msgid "Collision shape has %d open edges — bodies can pass through the holes"
+msgstr "Kształt kolizji ma otwarte krawędzie: %d — ciała mogą przelecieć przez dziury"
+
+msgid "Collision shape is empty — it no longer collides with anything"
+msgstr "Kształt kolizji jest pusty — z niczym już nie koliduje"
+
+msgid "Concave"
+msgstr "Wklęsły"
+
+msgid "Cone"
+msgstr "Stożek"
+
+msgid "Connect Vertex Path"
+msgstr "Połącz ścieżkę wierzchołków"
+
+msgid "Connected Only"
+msgstr "Tylko połączone"
+
+msgid "Constant"
+msgstr "Stały"
+
+msgid "Context Menu (Right Click Select)"
+msgstr "Menu kontekstowe (zaznaczanie prawym przyciskiem)"
+
+msgid "Convex"
+msgstr "Wypukły"
+
+msgid "Convex shape is flat — not applied to the collision shape until it has volume again"
+msgstr "Kształt wypukły jest płaski — nie trafi do kolizji, dopóki znów nie będzie miał objętości"
+
+msgid "Copy UV1 to UV2"
+msgstr "Kopiuj UV1 do UV2"
+
+msgid "Copy UV1 to UV2 for the selected faces"
+msgstr "Kopiuj UV1 do UV2 dla zaznaczonych ścian"
+
+msgid "Correct Face Attributes"
+msgstr "Koryguj atrybuty ścian"
+
+msgid "Could not save %s (error %d)"
+msgstr "Nie udało się zapisać %s (błąd %d)"
+
+msgid "Ctrl snap increment"
+msgstr "Krok przyciągania z Ctrl"
+
+msgid "Cube"
+msgstr "Sześcian"
+
+msgid "Cube Projection"
+msgstr "Rzutowanie sześcienne"
+
+msgid "Cube Size"
+msgstr "Rozmiar sześcianu"
+
+msgid "Cursor to Active"
+msgstr "Kursor do aktywnego"
+
+msgid "Cursor to Origin"
+msgstr "Kursor do początku"
+
+msgid "Cursor to Pixels"
+msgstr "Kursor do pikseli"
+
+msgid "Cursor to Selected"
+msgstr "Kursor do zaznaczenia"
+
+msgid "Cursor to World Origin"
+msgstr "Kursor do środka świata"
+
+msgid "Custom Texel Density"
+msgstr "Własna gęstość tekseli"
+
+msgid "Custom…"
+msgstr "Własna…"
+
+msgid "Custom… (%d px/m)"
+msgstr "Własna… (%d px/m)"
+
+msgid "Cylinder"
+msgstr "Walec"
+
+msgid "Cylinder Projection"
+msgstr "Rzutowanie walcowe"
+
+msgid "Delete"
+msgstr "Usuń"
+
+msgid "Delete Edges"
+msgstr "Usuń krawędzie"
+
+msgid "Delete Faces"
+msgstr "Usuń ściany"
+
+msgid "Delete Only Edges & Faces"
+msgstr "Usuń tylko krawędzie i ściany"
+
+msgid "Delete Only Faces"
+msgstr "Usuń tylko ściany"
+
+msgid "Delete Vertices"
+msgstr "Usuń wierzchołki"
+
+msgid "Delete menu"
+msgstr "Menu Usuń"
+
+msgid "Delete objects"
+msgstr "Usuń obiekty"
+
+msgid "Depth"
+msgstr "Głębokość"
+
+msgid "Deselect"
+msgstr "Odznacz"
+
+msgid "Deselect Linked (under cursor)"
+msgstr "Odznacz połączone (pod kursorem)"
+
+msgid "Deselect Material"
+msgstr "Odznacz materiał"
+
+msgid "Difference"
+msgstr "Różnica"
+
+msgid "Dim everything except the edited object (Alt+F)"
+msgstr "Przyciemnij wszystko poza edytowanym obiektem (Alt+F)"
+
+msgid "Direction"
+msgstr "Kierunek"
+
+msgid "Dissolve (by select mode)"
+msgstr "Rozpuść (wg trybu zaznaczania)"
+
+msgid "Dissolve Edges"
+msgstr "Rozpuść krawędzie"
+
+msgid "Dissolve Faces"
+msgstr "Rozpuść ściany"
+
+msgid "Dissolve Vertices"
+msgstr "Rozpuść wierzchołki"
+
+msgid "Distance"
+msgstr "Odległość"
+
+msgid "Duplicate"
+msgstr "Duplikuj"
+
+msgid "Duplicate and Move"
+msgstr "Duplikuj i przesuń"
+
+msgid "Duplicate objects"
+msgstr "Duplikuj obiekty"
+
+msgid "EDIT MODE · %s"
+msgstr "TRYB EDYCJI · %s"
+
+msgid "Edge"
+msgstr "Krawędź"
+
+msgid "Edge Length"
+msgstr "Długość krawędzi"
+
+msgid "Edge Select"
+msgstr "Zaznaczanie krawędzi"
+
+msgid "Edge menu"
+msgstr "Menu Krawędź"
+
+msgid "Edge select mode (2)"
+msgstr "Tryb zaznaczania krawędzi (2)"
+
+msgid "Edges"
+msgstr "Krawędzie"
+
+msgid "Edges  %d / %d"
+msgstr "Krawędzie  %d / %d"
+
+msgid "Edit Mode"
+msgstr "Tryb edycji"
+
+msgid "Enable Blender shortcuts in Object Mode"
+msgstr "Włącz skróty Blendera w trybie obiektowym"
+
+msgid "Enabled (O)"
+msgstr "Włączona (O)"
+
+msgid "Extrude"
+msgstr "Wyciągnij"
+
+msgid "Extrude Edges"
+msgstr "Wyciągnij krawędzie"
+
+msgid "Extrude Edges Only"
+msgstr "Wyciągnij tylko krawędzie"
+
+msgid "Extrude Faces"
+msgstr "Wyciągnij ściany"
+
+msgid "Extrude Faces Along Normals"
+msgstr "Wyciągnij ściany wzdłuż normalnych"
+
+msgid "Extrude Individual Faces"
+msgstr "Wyciągnij pojedyncze ściany"
+
+msgid "Extrude Region"
+msgstr "Wyciągnij obszar"
+
+msgid "Extrude Vertices"
+msgstr "Wyciągnij wierzchołki"
+
+msgid "Extrude Vertices Only"
+msgstr "Wyciągnij tylko wierzchołki"
+
+msgid "Extrude and Move"
+msgstr "Wyciągnij i przesuń"
+
+msgid "Extrude menu"
+msgstr "Menu Wyciągnij"
+
+msgid "Face"
+msgstr "Ściana"
+
+msgid "Face Angles"
+msgstr "Kąty ścian"
+
+msgid "Face Normals"
+msgstr "Normalne ścian"
+
+msgid "Face Orientation"
+msgstr "Orientacja ścian"
+
+msgid "Face Select"
+msgstr "Zaznaczanie ścian"
+
+msgid "Face menu"
+msgstr "Menu Ściana"
+
+msgid "Face select mode (3)"
+msgstr "Tryb zaznaczania ścian (3)"
+
+msgid "Faces"
+msgstr "Ściany"
+
+msgid "Faces  %d / %d"
+msgstr "Ściany  %d / %d"
+
+msgid "Factor"
+msgstr "Współczynnik"
+
+msgid "Falloff"
+msgstr "Zanik"
+
+msgid "Flat/Smooth"
+msgstr "Płaskie/Gładkie"
+
+msgid "Flip"
+msgstr "Odwróć"
+
+msgid "Flip Normals"
+msgstr "Odwróć normalne"
+
+msgid "Focus"
+msgstr "Skupienie"
+
+msgid "Frame colour"
+msgstr "Kolor ramki"
+
+msgid "Frame width (px)"
+msgstr "Grubość ramki (px)"
+
+msgid "Gizmo"
+msgstr "Gizmo"
+
+msgid "Global"
+msgstr "Globalna"
+
+msgid "Grab"
+msgstr "Przesuń"
+
+msgid "Grid"
+msgstr "Siatka"
+
+msgid "Hide"
+msgstr "Ukryj"
+
+msgid "Hide Unselected"
+msgstr "Ukryj niezaznaczone"
+
+msgid "Ico Sphere"
+msgstr "Ikosfera"
+
+msgid "Increment"
+msgstr "Krok"
+
+msgid "Individual"
+msgstr "Osobno"
+
+msgid "Individual Origins"
+msgstr "Indywidualne środki"
+
+msgid "Inset Faces"
+msgstr "Wstaw ściany"
+
+msgid "Intersect"
+msgstr "Część wspólna"
+
+msgid "Intersect (Boolean)"
+msgstr "Przecięcie (Boolean)"
+
+msgid "Intersect (Boolean) Difference"
+msgstr "Przecięcie (Boolean) Różnica"
+
+msgid "Intersect (Boolean) Intersect"
+msgstr "Przecięcie (Boolean) Część wspólna"
+
+msgid "Intersect (Boolean) Union"
+msgstr "Przecięcie (Boolean) Suma"
+
+msgid "Intersect (Boolean): Difference"
+msgstr "Przecięcie (Boolean): Różnica"
+
+msgid "Intersect (Boolean): Intersect"
+msgstr "Przecięcie (Boolean): Część wspólna"
+
+msgid "Intersect (Boolean): Union"
+msgstr "Przecięcie (Boolean): Suma"
+
+msgid "Inverse Square"
+msgstr "Odwrotny kwadrat"
+
+msgid "Invert"
+msgstr "Odwróć"
+
+msgid "Invert Selection"
+msgstr "Odwróć zaznaczenie"
+
+msgid "Island"
+msgstr "Wyspa"
+
+msgid "Join Selected Meshes  (Ctrl+J)"
+msgstr "Połącz zaznaczone siatki  (Ctrl+J)"
+
+msgid "Join meshes"
+msgstr "Połącz siatki"
+
+msgid "Join works in Object Mode (Tab out first)"
+msgstr "Łączenie działa w trybie obiektowym (najpierw wyjdź Tab)"
+
+msgid "Joined %d object(s)"
+msgstr "Połączono obiekty: %d"
+
+msgid "LMB drag — box select (Shift: extend, Ctrl: subtract)   Right click — context menu (hold: fly)\n"
+msgstr "Przeciągnij LPM — zaznaczanie prostokątem (Shift: dodaj, Ctrl: odejmij)   Prawy przycisk — menu kontekstowe (przytrzymaj: latanie)\n"
+
+msgid "LMB/Enter: confirm   RMB/Esc: cancel   Ctrl: snap   Shift: precision   type a number"
+msgstr "LPM/Enter: zatwierdź   PPM/Esc: anuluj   Ctrl: przyciąganie   Shift: precyzja   wpisz liczbę"
+
+msgid "LMB/Enter: confirm   RMB/Esc: cancel   X Y Z: axis (twice: local)   Shift+X/Y/Z: plane   Ctrl: snap   Shift: precision   type a number"
+msgstr "LPM/Enter: zatwierdź   PPM/Esc: anuluj   X Y Z: oś (dwa razy: lokalna)   Shift+X/Y/Z: płaszczyzna   Ctrl: przyciąganie   Shift: precyzja   wpisz liczbę"
+
+msgid "LOCAL VIEW"
+msgstr "WIDOK LOKALNY"
+
+msgid "Length"
+msgstr "Długość"
+
+msgid "Lightmap Pack"
+msgstr "Pakowanie lightmapy"
+
+msgid "Linear"
+msgstr "Liniowy"
+
+msgid "Local"
+msgstr "Lokalna"
+
+msgid "Local View"
+msgstr "Widok lokalny"
+
+msgid "Local View  (Numpad /)"
+msgstr "Widok lokalny  (Numpad /)"
+
+msgid "Local View frames the selection"
+msgstr "Widok lokalny kadruje zaznaczenie"
+
+msgid "Loop Cut and Slide"
+msgstr "Cięcie pętli i przesunięcie"
+
+msgid "Loop Cut: hover an edge, wheel / PgUp PgDn: number of cuts (%d), LMB: cut then slide, RMB / Esc: cancel"
+msgstr "Cięcie pętli: najedź na krawędź, kółko / PgUp PgDn: liczba cięć (%d), LPM: tnij i przesuń, PPM / Esc: anuluj"
+
+msgid "Major Radius"
+msgstr "Promień główny"
+
+msgid "Major Segments"
+msgstr "Segmenty główne"
+
+msgid "Make Edge/Face"
+msgstr "Utwórz krawędź/ścianę"
+
+msgid "Margin"
+msgstr "Margines"
+
+msgid "Mark Seam"
+msgstr "Oznacz szew"
+
+msgid "Mark Sharp"
+msgstr "Oznacz jako ostre"
+
+msgid "Material"
+msgstr "Materiał"
+
+msgid "Material slots: assign to selected faces, select by slot"
+msgstr "Sloty materiałów: przypisz do zaznaczonych ścian, zaznacz według slotu"
+
+msgid "Material: Add Slot"
+msgstr "Materiał: dodaj slot"
+
+msgid "Material: Assign to Selected"
+msgstr "Materiał: przypisz do zaznaczonych"
+
+msgid "Material: Select Slot"
+msgstr "Materiał: zaznacz slot"
+
+msgid "Median Point"
+msgstr "Punkt środkowy"
+
+msgid "Merge"
+msgstr "Scal"
+
+msgid "Merge Collapse"
+msgstr "Scal i zwiń"
+
+msgid "Merge Distance"
+msgstr "Odległość scalania"
+
+msgid "Merge at Center"
+msgstr "Scal w środku"
+
+msgid "Merge at First"
+msgstr "Scal w pierwszym"
+
+msgid "Merge at Last"
+msgstr "Scal w ostatnim"
+
+msgid "Merge by Distance"
+msgstr "Scal według odległości"
+
+msgid "Merge by Distance…"
+msgstr "Scal według odległości…"
+
+msgid "Merge menu"
+msgstr "Menu Scal"
+
+msgid "Mesh Edit"
+msgstr "Edycja siatki"
+
+msgid "Mesh Edit workspace (Ctrl+PageUp/PageDown)"
+msgstr "Obszar edycji siatki (Ctrl+PageUp/PageDown)"
+
+msgid "Mesh Symmetry"
+msgstr "Symetria siatki"
+
+msgid "Mesh saved to %s"
+msgstr "Siatkę zapisano do %s"
+
+msgid "Minor Radius"
+msgstr "Promień poboczny"
+
+msgid "Minor Segments"
+msgstr "Segmenty poboczne"
+
+msgid "Mirror"
+msgstr "Lustro"
+
+msgid "Mirror %s"
+msgstr "Lustro %s"
+
+msgid "Move"
+msgstr "Przesuń"
+
+msgid "Move  D: %.4f%s%s"
+msgstr "Przesuń  D: %.4f%s%s"
+
+msgid "Move  Dx: %.4f  Dy: %.4f  Dz: %.4f%s%s"
+msgstr "Przesuń  Dx: %.4f  Dy: %.4f  Dz: %.4f%s%s"
+
+msgid "Move X"
+msgstr "Przesuń X"
+
+msgid "Move Y"
+msgstr "Przesuń Y"
+
+msgid "Move Z"
+msgstr "Przesuń Z"
+
+msgid "Move objects"
+msgstr "Przesuń obiekty"
+
+msgid "Moving vertices does not stretch the UVs (Blender option)"
+msgstr "Przesuwanie wierzchołków nie rozciąga UV (opcja Blendera)"
+
+msgid "New objects use World-Scale UV"
+msgstr "Nowe obiekty używają UV w skali świata"
+
+msgid "Next tab (Mesh Edit / UV Edit)"
+msgstr "Następna zakładka (Edycja siatki / Edycja UV)"
+
+msgid "No 3D view"
+msgstr "Brak widoku 3D"
+
+msgid "No active element"
+msgstr "Brak aktywnego elementu"
+
+msgid "No operation to adjust"
+msgstr "Brak operacji do dostosowania"
+
+msgid "Normal"
+msgstr "Normalna"
+
+msgid "Normals"
+msgstr "Normalne"
+
+msgid "Normals menu"
+msgstr "Menu Normalne"
+
+msgid "Nothing selected"
+msgstr "Nic nie jest zaznaczone"
+
+msgid "Nothing selected to extrude"
+msgstr "Nic nie jest zaznaczone do wyciągnięcia"
+
+msgid "Nothing to separate (only one part)"
+msgstr "Nie ma czego rozdzielać (tylko jedna część)"
+
+msgid "Number of Cuts"
+msgstr "Liczba cięć"
+
+msgid "Object Mode shortcuts (optional)"
+msgstr "Skróty trybu obiektowego (opcjonalnie)"
+
+msgid "Only ConvexPolygonShape3D and ConcavePolygonShape3D can be edited (%s has its own handles)"
+msgstr "Edytować można tylko ConvexPolygonShape3D i ConcavePolygonShape3D (%s ma własne uchwyty)"
+
+msgid "Only Edges & Faces"
+msgstr "Tylko krawędzie i ściany"
+
+msgid "Only Faces"
+msgstr "Tylko ściany"
+
+msgid "Open or create a 3D scene first"
+msgstr "Najpierw otwórz albo utwórz scenę 3D"
+
+msgid "Operation cancelled: a convex shape needs at least 4 points that are not in one plane"
+msgstr "Operacja anulowana: kształt wypukły wymaga co najmniej 4 punktów nie leżących w jednej płaszczyźnie"
+
+msgid "Optional transform gizmo (Ctrl+`)"
+msgstr "Opcjonalne gizmo transformacji (Ctrl+`)"
+
+msgid "Options"
+msgstr "Opcje"
+
+msgid "Overlays"
+msgstr "Nakładki"
+
+msgid "Pack Islands"
+msgstr "Pakuj wyspy"
+
+msgid "Perimeter"
+msgstr "Obwód"
+
+msgid "Pin"
+msgstr "Przypnij"
+
+msgid "Pivot Point menu"
+msgstr "Menu punktu obrotu"
+
+msgid "Pivot for rotate / scale (Period)"
+msgstr "Punkt obrotu i skali (kropka)"
+
+msgid "Pivot: Bounds"
+msgstr "Obrót: granice"
+
+msgid "Pivot: Cursor"
+msgstr "Obrót: kursor"
+
+msgid "Pivot: Individual"
+msgstr "Obrót: osobno"
+
+msgid "Pivot: Median"
+msgstr "Obrót: środek"
+
+msgid "Plane"
+msgstr "Płaszczyzna"
+
+msgid "Polyforge Settings"
+msgstr "Ustawienia Polyforge"
+
+msgid "Polyforge data on this mesh is from an unknown version"
+msgstr "Dane Polyforge w tej siatce pochodzą z nieznanej wersji"
+
+msgid "Polyforge shortcuts"
+msgstr "Skróty Polyforge"
+
+msgid "Polygon Sides"
+msgstr "Liczba boków"
+
+msgid "Previous tab"
+msgstr "Poprzednia zakładka"
+
+msgid "Project default"
+msgstr "Domyślna projektu"
+
+msgid "Project default (%d px/m)"
+msgstr "Domyślna projektu (%d px/m)"
+
+msgid "Project defaults (World-Scale UV, optional)"
+msgstr "Ustawienia domyślne projektu (UV w skali świata, opcjonalnie)"
+
+msgid "Project from View"
+msgstr "Rzutuj z widoku"
+
+msgid "Project from View (Bounds)"
+msgstr "Rzutuj z widoku (granice)"
+
+msgid "Proportional"
+msgstr "Proporcjonalna"
+
+msgid "Proportional Editing"
+msgstr "Edycja proporcjonalna"
+
+msgid "Proportional Editing (O), falloff (Shift+O); wheel / PageUp / PageDown changes the size while transforming"
+msgstr "Edycja proporcjonalna (O), zanik (Shift+O); kółko / PageUp / PageDown zmienia zasięg podczas transformacji"
+
+msgid "Proportional Editing: off"
+msgstr "Edycja proporcjonalna: wył."
+
+msgid "Proportional Editing: on"
+msgstr "Edycja proporcjonalna: wł."
+
+msgid "Proportional Falloff"
+msgstr "Zanik proporcjonalny"
+
+msgid "Proportional: On"
+msgstr "Proporcjonalna: wł."
+
+msgid "Radius"
+msgstr "Promień"
+
+msgid "Radius 1"
+msgstr "Promień 1"
+
+msgid "Radius 2"
+msgstr "Promień 2"
+
+msgid "Recalculate Inside"
+msgstr "Przelicz do wewnątrz"
+
+msgid "Recalculate Normals"
+msgstr "Przelicz normalne"
+
+msgid "Recalculate Normals Inside"
+msgstr "Przelicz normalne do wewnątrz"
+
+msgid "Recalculate Normals Outside"
+msgstr "Przelicz normalne na zewnątrz"
+
+msgid "Recalculate Outside"
+msgstr "Przelicz na zewnątrz"
+
+msgid "Remove Material Slot"
+msgstr "Usuń slot materiału"
+
+msgid "Removed %d vertices"
+msgstr "Usunięto wierzchołki: %d"
+
+msgid "Repeat"
+msgstr "Powtórzenia"
+
+msgid "Reset"
+msgstr "Resetuj"
+
+msgid "Reveal Hidden"
+msgstr "Pokaż ukryte"
+
+msgid "Right Click Select"
+msgstr "Zaznaczanie prawym przyciskiem"
+
+msgid "Rings"
+msgstr "Pierścienie"
+
+msgid "Root"
+msgstr "Pierwiastek"
+
+msgid "Rotate"
+msgstr "Obróć"
+
+msgid "Rotate  %.2f°%s%s"
+msgstr "Obróć  %.2f°%s%s"
+
+msgid "Rotate objects"
+msgstr "Obróć obiekty"
+
+msgid "Save"
+msgstr "Zapisz"
+
+msgid "Save Mesh As…"
+msgstr "Zapisz siatkę jako…"
+
+msgid "Scale"
+msgstr "Skaluj"
+
+msgid "Scale  %.4f%s%s"
+msgstr "Skaluj  %.4f%s%s"
+
+msgid "Scale objects"
+msgstr "Skaluj obiekty"
+
+msgid "Seam"
+msgstr "Szew"
+
+msgid "Search operators"
+msgstr "Szukaj operacji"
+
+msgid "Search operators…"
+msgstr "Szukaj operacji…"
+
+msgid "Segments"
+msgstr "Segmenty"
+
+msgid "Segments: %d"
+msgstr "Segmenty: %d"
+
+msgid "Select"
+msgstr "Zaznacz"
+
+msgid "Select All"
+msgstr "Zaznacz wszystko"
+
+msgid "Select Invert"
+msgstr "Odwróć zaznaczenie"
+
+msgid "Select Less"
+msgstr "Zaznacz mniej"
+
+msgid "Select Linked"
+msgstr "Zaznacz połączone"
+
+msgid "Select Linked (under cursor)"
+msgstr "Zaznacz połączone (pod kursorem)"
+
+msgid "Select Material"
+msgstr "Zaznacz materiał"
+
+msgid "Select Mode"
+msgstr "Tryb zaznaczania"
+
+msgid "Select More"
+msgstr "Zaznacz więcej"
+
+msgid "Select None"
+msgstr "Odznacz wszystko"
+
+msgid "Select Similar"
+msgstr "Zaznacz podobne"
+
+msgid "Select UVs to pin"
+msgstr "Zaznacz UV do przypięcia"
+
+msgid "Select a MeshInstance3D or a CollisionShape3D to enter Edit Mode"
+msgstr "Zaznacz MeshInstance3D albo CollisionShape3D, żeby wejść w tryb edycji"
+
+msgid "Select faces"
+msgstr "Zaznacz ściany"
+
+msgid "Select faces first"
+msgstr "Najpierw zaznacz ściany"
+
+msgid "Select faces in the 3D view to edit their UVs (or turn on Sync)"
+msgstr "Zaznacz ściany w widoku 3D, żeby edytować ich UV (albo włącz synchronizację)"
+
+msgid "Select faces to inset"
+msgstr "Zaznacz ściany do wstawienia"
+
+msgid "Select faces to separate"
+msgstr "Zaznacz ściany do rozdzielenia"
+
+msgid "Select faces to unwrap"
+msgstr "Zaznacz ściany do rozłożenia"
+
+msgid "Select objects for Local View"
+msgstr "Zaznacz obiekty do widoku lokalnego"
+
+msgid "Select the cutter(s), then the object to change last"
+msgstr "Zaznacz obiekty tnące, a na końcu obiekt do zmiany"
+
+msgid "Select the cutting part (faces); the unselected part is the base"
+msgstr "Zaznacz część tnącą (ściany); niezaznaczona część jest bazą"
+
+msgid "Select two or more Polyforge meshes (the last one receives the others)"
+msgstr "Zaznacz co najmniej dwie siatki Polyforge (ostatnia przyjmie pozostałe)"
+
+msgid "Selected to Adjacent Unselected"
+msgstr "Zaznaczenie do sąsiednich niezaznaczonych"
+
+msgid "Selected to Cursor"
+msgstr "Zaznaczenie do kursora"
+
+msgid "Selected to Cursor (Offset)"
+msgstr "Zaznaczenie do kursora (z przesunięciem)"
+
+msgid "Selected to Pixels"
+msgstr "Zaznaczenie do pikseli"
+
+msgid "Selection"
+msgstr "Zaznaczenie"
+
+msgid "Selection to Active"
+msgstr "Zaznaczenie do aktywnego"
+
+msgid "Selection to Cursor"
+msgstr "Zaznaczenie do kursora"
+
+msgid "Selection to Cursor (Keep Offset)"
+msgstr "Zaznaczenie do kursora (zachowaj przesunięcie)"
+
+msgid "Separate"
+msgstr "Rozdziel"
+
+msgid "Separate Selection"
+msgstr "Rozdziel zaznaczenie"
+
+msgid "Separate by Loose Parts"
+msgstr "Rozdziel według luźnych części"
+
+msgid "Separate by Material"
+msgstr "Rozdziel według materiału"
+
+msgid "Separate menu"
+msgstr "Menu Rozdziel"
+
+msgid "Separated %d part(s) into new object(s)"
+msgstr "Rozdzielono części do nowych obiektów: %d"
+
+msgid "Set Material"
+msgstr "Ustaw materiał"
+
+msgid "Set Texel Density"
+msgstr "Ustaw gęstość tekseli"
+
+msgid "Settings…"
+msgstr "Ustawienia…"
+
+msgid "Shade Flat"
+msgstr "Cieniuj płasko"
+
+msgid "Shade Smooth"
+msgstr "Cieniuj gładko"
+
+msgid "Sharp"
+msgstr "Ostry"
+
+msgid "Sharpness"
+msgstr "Ostrość"
+
+msgid "Shortcuts…"
+msgstr "Skróty…"
+
+msgid "Shrink/Fatten"
+msgstr "Zmniejsz/Pogrub"
+
+msgid "Size"
+msgstr "Rozmiar"
+
+msgid "Smart UV Project"
+msgstr "Inteligentne rzutowanie UV"
+
+msgid "Smooth"
+msgstr "Gładki"
+
+msgid "Smooth Vertices"
+msgstr "Wygładź wierzchołki"
+
+msgid "Smoothing"
+msgstr "Wygładzanie"
+
+msgid "Snap"
+msgstr "Przyciąganie"
+
+msgid "Snap Menu"
+msgstr "Menu przyciągania"
+
+msgid "Snap Off"
+msgstr "Przyciąganie wył."
+
+msgid "Snap Pixels"
+msgstr "Przyciąganie do pikseli"
+
+msgid "Snap Selection"
+msgstr "Przyciągnij zaznaczenie"
+
+msgid "Snap To"
+msgstr "Przyciągaj do"
+
+msgid "Snap Vertex"
+msgstr "Przyciąganie do wierzchołków"
+
+msgid "Snap to Adjacent Unselected"
+msgstr "Przyciągnij do sąsiednich niezaznaczonych"
+
+msgid "Snap to Cursor"
+msgstr "Przyciągnij do kursora"
+
+msgid "Snap to Cursor (Offset)"
+msgstr "Przyciągnij do kursora (z przesunięciem)"
+
+msgid "Snap to Pixels"
+msgstr "Przyciągnij do pikseli"
+
+msgid "Snap: %s"
+msgstr "Przyciąganie: %s"
+
+msgid "Snapping (Shift+Tab)"
+msgstr "Przyciąganie (Shift+Tab)"
+
+msgid "Snapping (Shift+Tab; Ctrl inverts while transforming), Snap To (Ctrl+Shift+Tab)"
+msgstr "Przyciąganie (Shift+Tab; Ctrl odwraca podczas transformacji), Przyciągaj do (Ctrl+Shift+Tab)"
+
+msgid "Snapping while moving (Shift+Tab toggles, hold Ctrl to invert)"
+msgstr "Przyciąganie przy przesuwaniu (Shift+Tab przełącza, Ctrl odwraca)"
+
+msgid "Snapping: off (%s)"
+msgstr "Przyciąganie: wył. (%s)"
+
+msgid "Snapping: on (%s)"
+msgstr "Przyciąganie: wł. (%s)"
+
+msgid "Sphere"
+msgstr "Sfera"
+
+msgid "Sphere Projection"
+msgstr "Rzutowanie sferyczne"
+
+msgid "Statistics"
+msgstr "Statystyki"
+
+msgid "Sticky selection"
+msgstr "Lepkie zaznaczanie"
+
+msgid "Sticky: Location"
+msgstr "Lepkość: położenie"
+
+msgid "Sticky: Off"
+msgstr "Lepkość: wył."
+
+msgid "Sticky: Vertex"
+msgstr "Lepkość: wierzchołek"
+
+msgid "Stitch"
+msgstr "Zszyj"
+
+msgid "Subdivisions"
+msgstr "Podziały"
+
+msgid "Sync"
+msgstr "Synchronizacja"
+
+msgid "Texel Density"
+msgstr "Gęstość tekseli"
+
+msgid "Texel Density (px/m)"
+msgstr "Gęstość tekseli (px/m)"
+
+msgid "Texel Density: 128 px/m"
+msgstr "Gęstość tekseli: 128 px/m"
+
+msgid "Texel Density: 256 px/m"
+msgstr "Gęstość tekseli: 256 px/m"
+
+msgid "Texel Density: 512 px/m"
+msgstr "Gęstość tekseli: 512 px/m"
+
+msgid "Texel Density: Project Default"
+msgstr "Gęstość tekseli: domyślna projektu"
+
+msgid "Texel density (128 / 256 / 512 / custom)"
+msgstr "Gęstość tekseli (128 / 256 / 512 / własna)"
+
+msgid "Text resource"
+msgstr "Zasób tekstowy"
+
+msgid "Thickness"
+msgstr "Grubość"
+
+msgid "This CollisionShape3D has no shape"
+msgstr "Ten CollisionShape3D nie ma kształtu"
+
+msgid "This MeshInstance3D has no mesh — use Polyforge → Add Mesh"
+msgstr "Ten MeshInstance3D nie ma siatki — użyj Polyforge → Dodaj siatkę"
+
+msgid "This mesh was not made with Polyforge (importing other meshes comes in a later stage)"
+msgstr "Ta siatka nie powstała w Polyforge (import innych siatek będzie później)"
+
+msgid "This shape has no volume to edit"
+msgstr "Ten kształt nie ma objętości do edycji"
+
+msgid "Toggle Edit Mode"
+msgstr "Przełącz tryb edycji"
+
+msgid "Toggle Edit Mode  (Tab)"
+msgstr "Przełącz tryb edycji  (Tab)"
+
+msgid "Toggle Focus mode"
+msgstr "Przełącz tryb skupienia"
+
+msgid "Toggle Proportional"
+msgstr "Przełącz edycję proporcjonalną"
+
+msgid "Toggle Snapping"
+msgstr "Przełącz przyciąganie"
+
+msgid "Toggle X-Ray"
+msgstr "Przełącz X-Ray"
+
+msgid "Toggle X-Ray (Alt+Z)"
+msgstr "Przełącz X-Ray (Alt+Z)"
+
+msgid "Toggle gizmo"
+msgstr "Przełącz gizmo"
+
+msgid "Torus"
+msgstr "Torus"
+
+msgid "Transform Orientation (,): first X/Y/Z press uses it, second press Global"
+msgstr "Orientacja transformacji (,): pierwsze X/Y/Z jej używa, drugie Global"
+
+msgid "Transform Orientation menu"
+msgstr "Menu orientacji transformacji"
+
+msgid "Transform Pivot Point (.)"
+msgstr "Punkt obrotu transformacji (.)"
+
+msgid "Triangles  %d"
+msgstr "Trójkąty  %d"
+
+msgid "Triangulate Faces"
+msgstr "Trianguluj ściany"
+
+msgid "Tris to Quads"
+msgstr "Trójkąty na czworokąty"
+
+msgid "U unwrap  G R S  A  L  P pin  V stitch  Y split  Shift+S snap  Shift+RMB cursor  Ctrl+P pack"
+msgstr "U rozłóż  G R S  A  L  P przypnij  V zszyj  Y rozdziel  Shift+S przyciągnij  Shift+PPM kursor  Ctrl+P pakuj"
+
+msgid "UV Edit"
+msgstr "Edycja UV"
+
+msgid "UV Edit workspace: UV view next to the 3D view"
+msgstr "Obszar edycji UV: widok UV obok widoku 3D"
+
+msgid "UV Pivot"
+msgstr "Punkt obrotu UV"
+
+msgid "UV Snap"
+msgstr "Przyciąganie UV"
+
+msgid "UV Sphere"
+msgstr "Sfera UV"
+
+msgid "UV Sync Selection: show all faces, UV selection = mesh selection"
+msgstr "Synchronizacja zaznaczenia UV: widać wszystkie ściany, zaznaczenie UV = zaznaczenie siatki"
+
+msgid "UV Unwrap (%s)"
+msgstr "Rozkładanie UV (%s)"
+
+msgid "UV Unwrap menu"
+msgstr "Menu rozkładania UV"
+
+msgid "UV channel (UV2: lightmaps / gradient palette)"
+msgstr "Kanał UV (UV2: lightmapy / paleta gradientów)"
+
+msgid "UV select mode"
+msgstr "Tryb zaznaczania UV"
+
+msgid "Union"
+msgstr "Suma"
+
+msgid "Unpin"
+msgstr "Odepnij"
+
+msgid "Unwrap"
+msgstr "Rozłóż"
+
+msgid "Vertex"
+msgstr "Wierzchołek"
+
+msgid "Vertex Select"
+msgstr "Zaznaczanie wierzchołków"
+
+msgid "Vertex Slide"
+msgstr "Przesuwanie wierzchołków"
+
+msgid "Vertex Slide  (move the mouse along an edge)"
+msgstr "Przesuwanie wierzchołków  (przesuń mysz wzdłuż krawędzi)"
+
+msgid "Vertex Slide  Factor: %.4f%s"
+msgstr "Przesuwanie wierzchołków  Współczynnik: %.4f%s"
+
+msgid "Vertex menu"
+msgstr "Menu Wierzchołek"
+
+msgid "Vertex select mode (1)"
+msgstr "Tryb zaznaczania wierzchołków (1)"
+
+msgid "Vertices"
+msgstr "Wierzchołki"
+
+msgid "Vertices "
+msgstr "Wierzchołki "
+
+msgid "Vertices  %d / %d"
+msgstr "Wierzchołki  %d / %d"
+
+msgid "View"
+msgstr "Widok"
+
+msgid "Width"
+msgstr "Szerokość"
+
+msgid "World-Scale UV"
+msgstr "UV w skali świata"
+
+msgid "World-Scale UV (optional)"
+msgstr "UV w skali świata (opcjonalnie)"
+
+msgid "World-Scale UV (this object)"
+msgstr "UV w skali świata (ten obiekt)"
+
+msgid "World-Scale UV off"
+msgstr "UV w skali świata wył."
+
+msgid "World-Scale UV on: UVs projected at %d px/m"
+msgstr "UV w skali świata wł.: UV rzutowane z gęstością %d px/m"
+
+msgid "X Global"
+msgstr "X globalnie"
+
+msgid "X Local"
+msgstr "X lokalnie"
+
+msgid "X Subdivisions"
+msgstr "Podziały X"
+
+msgid "X-Ray"
+msgstr "X-Ray"
+
+msgid "Y Global"
+msgstr "Y globalnie"
+
+msgid "Y Local"
+msgstr "Y lokalnie"
+
+msgid "Y Subdivisions"
+msgstr "Podziały Y"
+
+msgid "Z Global"
+msgstr "Z globalnie"
+
+msgid "Z Local"
+msgstr "Z lokalnie"
+
+msgid "[b]Always (3D viewport)[/b]\n"
+msgstr "[b]Zawsze (widok 3D)[/b]\n"
+

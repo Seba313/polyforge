@@ -5,6 +5,7 @@
 @tool
 extends RefCounted
 
+const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
 const PfMesh := preload("res://addons/polyforge/core/pf_mesh.gd")
 const PfBuild := preload("res://addons/polyforge/core/pf_build.gd")
 const PfSelect := preload("res://addons/polyforge/core/pf_select.gd")
@@ -423,7 +424,7 @@ func _rehull() -> bool:
 	var same_faces: bool = r["mesh"].faces.size() == mesh.faces.size() and dropped == 0
 	mesh.from_dict(r["mesh"].to_dict())
 	if dropped > 0:
-		note = "%d vertex(es) ended up inside the convex hull and were removed" % dropped
+		note = PfI18n.t("%d vertex(es) ended up inside the convex hull and were removed") % dropped
 	var nv := {}
 	for v in sel_v:
 		if remap.has(v):

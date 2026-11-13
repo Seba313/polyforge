@@ -170,6 +170,13 @@ Other keys are blocked in Edit Mode so that Godot does not react unexpectedly. N
   a 2D cursor (`Shift`+RMB, `Shift+S`), `G`/`R`/`S`, pin (`P` / `Alt+P`), pack (`Ctrl+P`),
   stitch (`V`) and split (`Y`).
 
+## Translations
+
+Polyforge follows the editor language (*Editor Settings → Interface → Editor → Editor Language*).
+Polish is included; any other language shows English. To add a language, create
+`addons/polyforge/i18n/<language code>.po` with the English texts as `msgid` (see `pl.po`).
+Pull requests are welcome.
+
 ## Settings
 
 *Polyforge → Settings…*: frame colour and width, Right Click Select, snap increment, Local View

@@ -11,6 +11,9 @@ status=0
 ISO="$(mktemp -d)"
 export XDG_CONFIG_HOME="$ISO/config" XDG_DATA_HOME="$ISO/data" XDG_CACHE_HOME="$ISO/cache"
 mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME"
+# English editor UI, so the tests see Polyforge's English texts on any system.
+mkdir -p "$XDG_CONFIG_HOME/godot"
+printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\ninterface/editor/editor_language = "en"\n' > "$XDG_CONFIG_HOME/godot/editor_settings-4.7.tres"
 trap 'rm -rf "$ISO"' EXIT
 filter() { grep -E "^(==|  ok|  FAIL|  viewport|  \(|RESULT)|SCRIPT ERROR|Parse Error|hides a global"; }
 
