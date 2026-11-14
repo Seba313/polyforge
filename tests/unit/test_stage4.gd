@@ -19,6 +19,7 @@ func _init() -> void:
 	_material_slots()
 	_select_similar()
 	_translations()
+	_vertex_colors()
 	print("RESULT: ", "PASS" if fails == 0 else "FAIL (%d)" % fails)
 	quit(1 if fails else 0)
 
@@ -64,3 +65,32 @@ func _translations() -> void:
 			bad += 1
 			print("    placeholder mismatch: ", id)
 	check(bad == 0, "every translation keeps the same %-placeholders")
+
+func _vertex_colors() -> void:
+	print("== vertex colours (face corner)")
+	var PfOps := load("res://addons/polyforge/core/pf_ops.gd")
+	var c = PfPrim.cube()
+	c.has_colors = true
+	c.fill_colors()
+	check(c.colors.size() == 6 and c.colors[0][0] == Color.WHITE, "unset colours default to white")
+	for fi in c.faces.size():
+		var a := PackedColorArray()
+		for k in c.faces[fi].size():
+			a.append(Color(0, 0, 1) if fi == 0 else Color(1, 0, 0))
+		c.colors[fi] = a
+	var d = PfMesh.new()
+	d.from_dict(c.to_dict())
+	check(d.has_colors and d.colors[0][1] == Color(0, 0, 1) and d.colors[1][0] == Color(1, 0, 0), "round trip keeps per-corner colours (hard edge)")
+	var am: ArrayMesh = PfBuild.build(c)
+	var arr := am.surface_get_arrays(0)
+	check(arr[Mesh.ARRAY_COLOR] != null and (arr[Mesh.ARRAY_COLOR] as PackedColorArray).size() == (arr[Mesh.ARRAY_VERTEX] as PackedVector3Array).size(), "ArrayMesh gets a COLOR array")
+	var f0: PackedInt32Array = c.faces[0].duplicate()
+	PfOps.flip(c, {0: true})
+	check(c.colors[0].size() == 4 and c.faces[0] != f0, "flip keeps colours aligned with corners")
+	var r: Dictionary = PfOps.extrude_individual(c, {1: true})
+	c.fill_colors()
+	check(not r.has("error") and c.colors[1][0] == Color(1, 0, 0) and c.colors[c.faces.size() - 1][0] == Color(1, 0, 0), "extrude: faces keep / inherit the neighbour colour")
+	var ok: bool = c.validate() == ""
+	for fi in c.faces.size():
+		ok = ok and c.colors[fi].size() == c.faces[fi].size()
+	check(ok, "after an operator every face has corner colours again (%s)" % c.validate())

@@ -35,6 +35,7 @@ static func remove_faces(m, del: Dictionary) -> void:
 	var nf: Array[PackedInt32Array] = []
 	var nu: Array[PackedVector2Array] = []
 	var nu2: Array[PackedVector2Array] = []
+	var nc: Array[PackedColorArray] = []
 	var nm := PackedInt32Array()
 	var ns := PackedByteArray()
 	var nt := PackedInt32Array()
@@ -44,12 +45,14 @@ static func remove_faces(m, del: Dictionary) -> void:
 		nf.append(m.faces[fi])
 		nu.append(m.uvs[fi])
 		nu2.append(m.uv2s[fi])
+		nc.append(m.colors[fi])
 		nm.append(m.face_mat[fi])
 		ns.append(m.face_smooth[fi])
 		nt.append(m.face_tag[fi] if fi < m.face_tag.size() else -1)
 	m.faces = nf
 	m.uvs = nu
 	m.uv2s = nu2
+	m.colors = nc
 	m.face_mat = nm
 	m.face_smooth = ns
 	m.face_tag = nt
@@ -343,6 +346,7 @@ static func dissolve_verts(m, sv: Dictionary) -> Dictionary:
 				var u2: PackedVector2Array = m.uv2s[fi]
 				u2.remove_at(k)
 				m.uv2s[fi] = u2
+				m.colors[fi] = PackedColorArray()
 			m.invalidate()
 			made += 1
 			continue
@@ -401,6 +405,7 @@ static func weld(m, target_of: Dictionary) -> Dictionary:
 		m.faces[fi] = nf
 		m.uvs[fi] = nu
 		m.uv2s[fi] = nu2
+		m.colors[fi] = PackedColorArray()
 	for dname in ["sharp_edges", "seam_edges", "wire_edges"]:
 		var d: Dictionary = m.get(dname)
 		var nd := {}
@@ -807,7 +812,9 @@ static func duplicate_geometry(m, sv: Dictionary, se: Dictionary, sf: Dictionary
 		var f := PackedInt32Array()
 		for v in m.faces[fi]:
 			f.append(map[v])
-		new_f[add_face(m, f, m.uvs[fi].duplicate(), m.face_mat[fi], m.face_smooth[fi] != 0, m.uv2s[fi].duplicate())] = true
+		var nfi := add_face(m, f, m.uvs[fi].duplicate(), m.face_mat[fi], m.face_smooth[fi] != 0, m.uv2s[fi].duplicate())
+		m.colors[nfi] = m.colors[fi].duplicate()
+		new_f[nfi] = true
 		for e in m.face_edges(fi):
 			face_edges[e] = true
 	var new_e := {}
@@ -967,6 +974,9 @@ static func flip(m, sf: Dictionary) -> void:
 		var u2: PackedVector2Array = m.uv2s[fi]
 		u2.reverse()
 		m.uv2s[fi] = u2
+		var c: PackedColorArray = m.colors[fi]
+		c.reverse()
+		m.colors[fi] = c
 	m.invalidate()
 
 ## Recalculate Outside (inside = false) / Inside: consistent winding inside

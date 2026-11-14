@@ -43,5 +43,8 @@ static func compute(host: Node, base, cutters: Array, op: String) -> Dictionary:
 				mats.append(mt)
 	var res = PfOps2.from_array_mesh(baked, mats)
 	res.world_uv = base.world_uv
+	if base.has_colors:
+		res.has_colors = true
+		res.transfer_colors(base)
 	res.texel_density = base.texel_density
 	return {"mesh": res}

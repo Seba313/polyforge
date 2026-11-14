@@ -75,6 +75,14 @@ const EDIT := {
 	"prev_tab": ["Ctrl+PageUp"],
 }
 
+const PAINT := {
+	"paint_radius": ["F"],
+	"paint_strength": ["Shift+F"],
+	"paint_sample": ["S"],
+	"paint_fill": ["Shift+K"],
+	"paint_swap": ["X"],
+}
+
 const OBJECT := {
 	"obj_grab": ["G"],
 	"obj_rotate": ["R"],
@@ -91,7 +99,7 @@ const LABELS := {
 	"select_all": "Select All", "select_none": "Select None", "select_invert": "Invert Selection",
 	"box_select": "Box Select", "circle_select": "Circle Select",
 	"select_linked_pick": "Select Linked (under cursor)", "deselect_linked_pick": "Deselect Linked (under cursor)",
-	"select_linked": "Select Linked", "select_similar_menu": "Select Similar", "snap_menu": "Snap Menu", "view_selected": "View Selected", "proportional": "Proportional Editing", "prop_falloff_menu": "Proportional Falloff", "mirror_menu": "Mirror", "snap_toggle": "Toggle Snapping", "snap_target_menu": "Snap To", "select_more": "Select More", "select_less": "Select Less",
+	"select_linked": "Select Linked", "select_similar_menu": "Select Similar", "snap_menu": "Snap Menu", "view_selected": "View Selected", "paint_radius": "Brush Radius", "paint_strength": "Brush Strength", "paint_sample": "Sample Color", "paint_fill": "Set Vertex Colors", "paint_swap": "Swap Colors", "proportional": "Proportional Editing", "prop_falloff_menu": "Proportional Falloff", "mirror_menu": "Mirror", "snap_toggle": "Toggle Snapping", "snap_target_menu": "Snap To", "select_more": "Select More", "select_less": "Select Less",
 	"hide": "Hide", "hide_unselected": "Hide Unselected", "reveal": "Reveal Hidden", "xray": "Toggle X-Ray",
 	"grab": "Move", "rotate": "Rotate", "scale": "Scale", "pivot_menu": "Pivot Point menu",
 	"orientation_menu": "Transform Orientation menu", "toggle_gizmo": "Toggle gizmo",

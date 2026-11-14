@@ -160,6 +160,20 @@ Other keys are blocked in Edit Mode so that Godot does not react unexpectedly. N
   Deselect, Remove slot; *Add* creates a new slot. Each slot becomes a separate `ArrayMesh` surface.
 - **3D cursor:** also usable as the pivot; new primitives are added there. It is not saved in the scene.
 
+## Vertex Paint (Paint tab)
+
+The **Paint** tab (next to Mesh Edit / UV Edit) paints vertex colours, like Blender's Vertex Paint mode.
+Colours are stored per face corner, so brush strokes blend smoothly while fills can have sharp borders.
+
+- LMB paints the primary colour, `Ctrl`+LMB the secondary one, `X` swaps them.
+- `F` / `Shift+F`: brush radius / strength (move the mouse, LMB confirms, RMB cancels); `S` samples the
+  colour under the mouse; `Shift+K` fills the selected faces (all faces when nothing is selected).
+- Bar: colours, blend mode (Mix / Add / Subtract / Multiply), radius, strength, *Mask* (paint only the
+  selected faces), *Front Faces*, *Preview* (shows the vertex colours instead of the material; editor only).
+  Mesh Symmetry X (Proportional menu) mirrors the strokes.
+- Each stroke is one undo step. The result is the `COLOR` array of the `ArrayMesh`. To see it in the game,
+  the material must use vertex colours (e.g. StandardMaterial3D → *Vertex Color → Use as Albedo*).
+
 ## UV
 
 - **By default UVs work as in Blender:** they live on face corners, so moving vertices can stretch

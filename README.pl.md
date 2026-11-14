@@ -196,6 +196,20 @@ poprzedniego); *Add* dodaje slot. Każdy slot to osobna powierzchnia `ArrayMesh`
 
 **Right Click Select** (ustawienia): prawy przycisk zaznacza, `W` otwiera menu kontekstowe.
 
+## Malowanie wierzchołków (zakładka Paint)
+
+Zakładka **Paint** (obok Mesh Edit / UV Edit) maluje kolory wierzchołków, jak tryb Vertex Paint w Blenderze.
+Kolory są zapisane na narożnikach ścian: pędzel daje płynne przejścia, a wypełnienie ostre granice.
+
+- LPM maluje kolorem głównym, `Ctrl`+LPM dodatkowym, `X` je zamienia.
+- `F` / `Shift+F`: promień / siła pędzla (ruch myszą, LPM zatwierdza, PPM anuluje); `S` pobiera kolor spod
+  kursora; `Shift+K` wypełnia zaznaczone ściany (wszystkie, gdy nic nie jest zaznaczone).
+- Pasek: kolory, tryb mieszania (Mix / Add / Subtract / Multiply), promień, siła, *Mask* (tylko zaznaczone
+  ściany), *Front Faces*, *Preview* (kolory wierzchołków zamiast materiału, tylko w edytorze).
+  Symetria X (menu Proportional) odbija pociągnięcia.
+- Każde pociągnięcie to jeden krok cofania. Wynik trafia do tablicy `COLOR` w `ArrayMesh`. Żeby był widoczny
+  w grze, materiał musi używać kolorów wierzchołków (np. StandardMaterial3D → *Vertex Color → Use as Albedo*).
+
 ## UV
 
 - **Domyślnie jak w Blenderze:** UV są w narożnikach ścian; przesuwanie vertexów może

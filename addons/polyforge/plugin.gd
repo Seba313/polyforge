@@ -26,6 +26,8 @@ const PfUi := preload("res://addons/polyforge/editor/pf_ui.gd")
 const PfLocalView := preload("res://addons/polyforge/editor/pf_local_view.gd")
 const PfUvPanel := preload("res://addons/polyforge/editor/pf_uv_panel.gd")
 const PfMatPanel := preload("res://addons/polyforge/editor/pf_mat_panel.gd")
+const PfPaint := preload("res://addons/polyforge/editor/pf_paint.gd")
+const PAINT_ALLOWED := ["select_all", "select_none", "select_invert", "xray", "view_selected", "next_tab", "prev_tab", "hide", "hide_unselected", "reveal"]
 const PfSaveGuard := preload("res://addons/polyforge/editor/pf_save_guard.gd")
 const PfShape := preload("res://addons/polyforge/core/pf_shape.gd")
 const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
@@ -53,6 +55,10 @@ var ui = null
 var local_view = null
 var uv_panel: Control = null
 var mat_panel: Control = null
+var paint = PfPaint.new()
+var _radial: Dictionary = {}      # F / Shift+F in Paint: {"kind", "center", "orig"}
+var _preview_node: GeometryInstance3D = null
+var _paint_mat: StandardMaterial3D = null
 var tab := 0                 # 0 = Mesh Edit, 1 = UV Edit
 var pivot_mode := "median"
 var orientation := "global"  # Transform Orientation (global / local / normal / view)
@@ -460,6 +466,92 @@ func _restore_uv_width(width: float) -> void:
 	split.split_offset += int(width - uv_panel.size.x) * (1 if split.get_child(0) == n else -1)
 	uv_panel.frame_unit.call_deferred()
 
+# ==============================================================================
+# Paint tab (Vertex Paint)
+# ==============================================================================
+
+## Paint tab input; -1 = not handled here (falls through to the normal path).
+func _paint_input(camera: Camera3D, event: InputEvent) -> int:
+	if not _radial.is_empty():
+		return _radial_input(event)
+	var mx := bool(settings.get_pref("mirror_axes")[0])
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			paint.begin(session, camera, event.position, event.ctrl_pressed, mx)
+		else:
+			paint.end(session)
+		update_overlays()
+		return STOP
+	if event is InputEventMouseMotion:
+		if paint.stroking:
+			paint.dab(session, camera, event.position, mx)
+		update_overlays()
+		return STOP if paint.stroking else PASS
+	if event is InputEventKey:
+		var k := event as InputEventKey
+		var a := PfKeymap.find(PfKeymap.PAINT, k)
+		if a == "":
+			a = PfKeymap.find(PfKeymap.EDIT, k)
+			if a != "" and not PAINT_ALLOWED.has(a):
+				return STOP
+		if a != "":
+			if k.pressed and not k.echo:
+				run_action(a)
+			return STOP
+	return -1
+
+func _radial_input(event: InputEvent) -> int:
+	if event is InputEventMouseMotion:
+		var d: float = (event as InputEventMouseMotion).position.distance_to(_radial["center"])
+		if _radial["kind"] == "radius":
+			paint.radius = maxf(d / EditorInterface.get_editor_scale(), 2.0)
+		else:
+			paint.strength = clampf(d / 200.0, 0.0, 1.0)
+	elif (event is InputEventMouseButton and event.pressed) or (event is InputEventKey and event.pressed):
+		var cancel: bool = (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT) \
+			or (event is InputEventKey and (event as InputEventKey).keycode == KEY_ESCAPE)
+		var confirm: bool = (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT) \
+			or (event is InputEventKey and (event as InputEventKey).keycode in [KEY_ENTER, KEY_KP_ENTER, KEY_SPACE])
+		if cancel:
+			paint.set(_radial["kind"], _radial["orig"])
+		if cancel or confirm:
+			_radial = {}
+			ui.sync()
+	update_overlays()
+	return STOP
+
+## Paint tab preview: the edited object shows its vertex colours (editor only,
+## through the RenderingServer: the node and its materials are untouched).
+func _paint_preview(on: bool) -> void:
+	if _preview_node != null and is_instance_valid(_preview_node):
+		var own: Material = _preview_node.material_override
+		RenderingServer.instance_geometry_set_material_override(_preview_node.get_instance(), own.get_rid() if own != null else RID())
+	_preview_node = null
+	if not on or not (session.node is GeometryInstance3D):
+		return
+	if _paint_mat == null:
+		_paint_mat = StandardMaterial3D.new()
+		_paint_mat.vertex_color_use_as_albedo = true
+		_paint_mat.vertex_color_is_srgb = true
+	_preview_node = session.node
+	RenderingServer.instance_geometry_set_material_override(_preview_node.get_instance(), _paint_mat.get_rid())
+
+func _draw_paint_brush(vc: Control, font: Font) -> void:
+	var sc := EditorInterface.get_editor_scale()
+	if not _radial.is_empty():
+		var c: Vector2 = _radial["center"]
+		if _radial["kind"] == "radius":
+			vc.draw_arc(c, paint.radius * sc, 0, TAU, 64, Color.WHITE, 1.5, true)
+		else:
+			vc.draw_arc(c, 200.0, 0, TAU, 64, Color(1, 1, 1, 0.3), 1.0, true)
+			vc.draw_arc(c, paint.strength * 200.0, 0, TAU, 64, Color.WHITE, 1.5, true)
+		var t := (PfI18n.t("Radius") + "  %d px" % paint.radius) if _radial["kind"] == "radius" else (PfI18n.t("Strength") + "  %.2f" % paint.strength)
+		_label(vc, font, t, vc.size.y - 40.0, Color.WHITE)
+		return
+	vc.draw_arc(_mouse, paint.radius * sc, 0, TAU, 64, Color(0, 0, 0, 0.6), 3.0, true)
+	vc.draw_arc(_mouse, paint.radius * sc, 0, TAU, 64, Color(1, 1, 1, 0.95), 1.0, true)
+	_label(vc, font, PfI18n.t("Paint: LMB primary, Ctrl+LMB secondary colour   F radius   Shift+F strength   S sample   Shift+K fill   X swap"), vc.size.y - 18.0, Color(1, 1, 1, 0.85), 12)
+
 func _apply_mat_panel() -> void:
 	mat_panel.visible = session != null and not session.is_shape() and bool(settings.get_pref("material_panel"))
 	if mat_panel.visible:
@@ -468,6 +560,9 @@ func _apply_mat_panel() -> void:
 
 func _apply_tab() -> void:
 	_apply_mat_panel()
+	_paint_preview(session != null and tab == 2 and not session.is_shape() and bool(settings.get_pref("paint_preview")))
+	if overlay.is_created():
+		overlay.set_visible(session == null or tab != 2 or session.is_shape() or paint.mask)
 	var show: bool = session != null and tab == 1 and not session.is_shape()
 	if uv_panel.visible and not show:
 		settings.set_pref("uv_panel_width", int(uv_panel.size.x))
@@ -520,6 +615,10 @@ func _forward_impl(camera: Camera3D, event: InputEvent) -> int:
 		return STOP
 	if _region != "":
 		return _region_input(camera, event)
+	if session != null and tab == 2 and not session.is_shape():
+		var pr := _paint_input(camera, event)
+		if pr >= 0:
+			return pr
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		return _rmb_input(camera, event)
 	if event is InputEventKey:
@@ -879,7 +978,32 @@ func run_action(action: String, arg: Variant = null) -> void:
 			_apply_tab()
 			ui.sync()
 		"next_tab", "prev_tab":
-			run_action("tab", (tab + 1) % 2)
+			if session != null and session.is_shape():
+				return
+			run_action("tab", (tab + (1 if action == "next_tab" else 2)) % 3)
+		"paint_radius", "paint_strength":
+			var r := action == "paint_radius"
+			var val: float = paint.radius * EditorInterface.get_editor_scale() if r else paint.strength * 200.0
+			_radial = {"kind": "radius" if r else "strength", "center": _mouse - Vector2(val, 0), "orig": paint.radius if r else paint.strength}
+			update_overlays()
+		"paint_sample":
+			if _camera != null and paint.sample(session, _camera, _mouse):
+				ui.sync()
+		"paint_fill":
+			paint.fill(session)
+		"paint_swap":
+			var c: Color = paint.color
+			paint.color = paint.color2
+			paint.color2 = c
+			ui.sync()
+		"paint_set":
+			paint.set(arg[0], arg[1])
+			if arg[0] == "mask":
+				_apply_tab()
+			if arg[0] == "preview":
+				settings.set_pref("paint_preview", bool(arg[1]))
+				_apply_tab()
+			ui.sync()
 		"add_object":
 			if session != null:
 				run_action("add_mesh_pick", arg)
@@ -2192,6 +2316,10 @@ func _add_object(kind: String, values := {}) -> void:
 func _enter_after_add(mi: MeshInstance3D) -> void:
 	if is_instance_valid(mi) and mi.is_inside_tree():
 		enter_edit(mi)
+		# Godot switches the edited object a frame later; redraw the frame then.
+		for i in 2:
+			await get_tree().process_frame
+		update_overlays()
 
 ## Shift+RMB: the 3D cursor goes to the surface under the mouse, else onto the
 ## view plane through its current position (Blender).
@@ -2449,10 +2577,14 @@ func _forward_3d_draw_over_viewport(vc: Control) -> void:
 			label += " · X-Ray"
 		if tab == 1:
 			label += " · " + PfI18n.t("UV Edit")
+		elif tab == 2 and not session.is_shape():
+			label += " · " + PfI18n.t("Paint")
 		_label(vc, font, label, top, col)
 		top += 22.0
 	if session != null:
 		_draw_text_overlays(vc, font)
+		if tab == 2 and not session.is_shape() and _region == "":
+			_draw_paint_brush(vc, font)
 	if session != null and _camera != null and not _camera.is_position_behind(cursor3d):
 		var c := _camera.unproject_position(cursor3d)
 		var r := 10.0 * EditorInterface.get_editor_scale()

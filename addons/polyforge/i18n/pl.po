@@ -147,6 +147,9 @@ msgstr "Fazuj wierzchołki"
 msgid "Binary resource"
 msgstr "Zasób binarny"
 
+msgid "Blend mode"
+msgstr "Tryb mieszania"
+
 msgid "Boolean"
 msgstr "Boolean"
 
@@ -176,6 +179,18 @@ msgstr "Zaznaczanie prostokątem"
 
 msgid "Box Select: drag LMB (MMB / Shift: deselect)   RMB / Esc: cancel"
 msgstr "Zaznaczanie prostokątem: przeciągnij LPM (ŚPM / Shift: odznacz)   PPM / Esc: anuluj"
+
+msgid "Brush Radius"
+msgstr "Promień pędzla"
+
+msgid "Brush Strength"
+msgstr "Siła pędzla"
+
+msgid "Brush radius (F)"
+msgstr "Promień pędzla (F)"
+
+msgid "Brush strength (Shift+F)"
+msgstr "Siła pędzla (Shift+F)"
 
 msgid "By Distance…"
 msgstr "Według odległości…"
@@ -486,6 +501,9 @@ msgstr "Kolor ramki"
 msgid "Frame width (px)"
 msgstr "Grubość ramki (px)"
 
+msgid "Front Faces"
+msgstr "Przednie ściany"
+
 msgid "Gizmo"
 msgstr "Gizmo"
 
@@ -624,6 +642,9 @@ msgstr "Oznacz szew"
 msgid "Mark Sharp"
 msgstr "Oznacz jako ostre"
 
+msgid "Mask"
+msgstr "Maska"
+
 msgid "Material"
 msgstr "Materiał"
 
@@ -696,6 +717,9 @@ msgstr "Lustro"
 msgid "Mirror %s"
 msgstr "Lustro %s"
 
+msgid "Mix"
+msgstr "Mieszaj"
+
 msgid "Move"
 msgstr "Przesuń"
 
@@ -719,6 +743,9 @@ msgstr "Przesuń obiekty"
 
 msgid "Moving vertices does not stretch the UVs (Blender option)"
 msgstr "Przesuwanie wierzchołków nie rozciąga UV (opcja Blendera)"
+
+msgid "Multiply"
+msgstr "Mnóż"
 
 msgid "New objects use World-Scale UV"
 msgstr "Nowe obiekty używają UV w skali świata"
@@ -786,6 +813,18 @@ msgstr "Nakładki"
 msgid "Pack Islands"
 msgstr "Pakuj wyspy"
 
+msgid "Paint"
+msgstr "Malowanie"
+
+msgid "Paint only faces facing the view"
+msgstr "Maluj tylko ściany zwrócone do widoku"
+
+msgid "Paint only the selected faces (face selection masking)"
+msgstr "Maluj tylko zaznaczone ściany (maskowanie zaznaczeniem)"
+
+msgid "Paint: LMB primary, Ctrl+LMB secondary colour   F radius   Shift+F strength   S sample   Shift+K fill   X swap"
+msgstr "Malowanie: LPM kolor główny, Ctrl+LPM dodatkowy   F promień   Shift+F siła   S pobierz kolor   Shift+K wypełnij   X zamień"
+
 msgid "Perimeter"
 msgstr "Obwód"
 
@@ -825,8 +864,14 @@ msgstr "Skróty Polyforge"
 msgid "Polygon Sides"
 msgstr "Liczba boków"
 
+msgid "Preview"
+msgstr "Podgląd"
+
 msgid "Previous tab"
 msgstr "Poprzednia zakładka"
+
+msgid "Primary colour (LMB)"
+msgstr "Kolor główny (LPM)"
 
 msgid "Project default"
 msgstr "Domyślna projektu"
@@ -921,6 +966,9 @@ msgstr "Obróć  %.2f°%s%s"
 msgid "Rotate objects"
 msgstr "Obróć obiekty"
 
+msgid "Sample Color"
+msgstr "Pobierz kolor"
+
 msgid "Save"
 msgstr "Zapisz"
 
@@ -944,6 +992,9 @@ msgstr "Szukaj operacji"
 
 msgid "Search operators…"
 msgstr "Szukaj operacji…"
+
+msgid "Secondary colour (Ctrl+LMB); X swaps"
+msgstr "Kolor dodatkowy (Ctrl+LPM); X zamienia"
 
 msgid "Segments"
 msgstr "Segmenty"
@@ -1071,6 +1122,9 @@ msgstr "Ustaw materiał"
 msgid "Set Texel Density"
 msgstr "Ustaw gęstość tekseli"
 
+msgid "Set Vertex Colors"
+msgstr "Ustaw kolory wierzchołków"
+
 msgid "Settings…"
 msgstr "Ustawienia…"
 
@@ -1088,6 +1142,9 @@ msgstr "Ostrość"
 
 msgid "Shortcuts…"
 msgstr "Skróty…"
+
+msgid "Show the vertex colours instead of the material while painting"
+msgstr "Podczas malowania pokazuj kolory wierzchołków zamiast materiału"
 
 msgid "Shrink/Fatten"
 msgstr "Zmniejsz/Pogrub"
@@ -1185,8 +1242,17 @@ msgstr "Lepkość: wierzchołek"
 msgid "Stitch"
 msgstr "Zszyj"
 
+msgid "Strength"
+msgstr "Siła"
+
 msgid "Subdivisions"
 msgstr "Podziały"
+
+msgid "Subtract"
+msgstr "Odejmij"
+
+msgid "Swap Colors"
+msgstr "Zamień kolory"
 
 msgid "Sync"
 msgstr "Synchronizacja"
@@ -1319,6 +1385,9 @@ msgstr "Rozłóż"
 
 msgid "Vertex"
 msgstr "Wierzchołek"
+
+msgid "Vertex Paint workspace: brush colours onto the mesh"
+msgstr "Obszar malowania wierzchołków: maluj kolory pędzlem po siatce"
 
 msgid "Vertex Select"
 msgstr "Zaznaczanie wierzchołków"

@@ -99,6 +99,10 @@ func free_all() -> void:
 func is_created() -> bool:
 	return not _instances.is_empty()
 
+func set_visible(on: bool) -> void:
+	for k in _instances:
+		RenderingServer.instance_set_visible(_instances[k], on)
+
 func set_transform(xf: Transform3D) -> void:
 	for k in _instances:
 		RenderingServer.instance_set_transform(_instances[k], xf)

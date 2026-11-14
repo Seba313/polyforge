@@ -34,6 +34,16 @@ var add_popup: PopupMenu
 var edit_bar: HBoxContainer
 var tab_mesh: Button
 var tab_uv: Button
+var tab_paint: Button
+var paint_box: HBoxContainer
+var paint_col: ColorPickerButton
+var paint_col2: ColorPickerButton
+var paint_blend: OptionButton
+var paint_radius: SpinBox
+var paint_strength: SpinBox
+var paint_mask: Button
+var paint_front: Button
+var paint_preview: Button
 var mode_btns: Array[Button] = []
 var xray_btn: Button
 var focus_btn: Button
@@ -109,9 +119,13 @@ func build(p: EditorPlugin) -> void:
 	tab_mesh.button_pressed = true
 	tab_mesh.toggled.connect(func(on): if on and not _syncing: plugin.run_action("tab", 0))
 	tab_uv.toggled.connect(func(on): if on and not _syncing: plugin.run_action("tab", 1))
+	tab_paint = _toggle("Paint", "Vertex Paint workspace: brush colours onto the mesh", tg)
+	tab_paint.toggled.connect(func(on): if on and not _syncing: plugin.run_action("tab", 2))
 	edit_bar.add_child(tab_mesh)
 	edit_bar.add_child(tab_uv)
+	edit_bar.add_child(tab_paint)
 	edit_bar.add_child(VSeparator.new())
+	_build_paint_box()
 	var mg := ButtonGroup.new()
 	for i in 3:
 		var b := _toggle(["Vertex", "Edge", "Face"][i], PfI18n.t(["Vertex select mode (1)", "Edge select mode (2)", "Face select mode (3)"][i]), mg)
@@ -335,6 +349,19 @@ func sync() -> void:
 	if s != null:
 		# Collision shapes have no UVs / materials: no UV Edit tab, no Options.
 		tab_uv.disabled = s.is_shape()
+		tab_paint.disabled = s.is_shape()
+		paint_box.visible = plugin.tab == 2 and not s.is_shape()
+		for c in [pivot_btn, orient_btn, gizmo_btn, prop_btn, snap_btn]:
+			c.visible = not paint_box.visible
+		var pt = plugin.paint
+		paint_col.color = pt.color
+		paint_col2.color = pt.color2
+		paint_blend.select(maxi(pt.BLENDS.map(func(b): return b[0]).find(pt.blend), 0))
+		paint_radius.value = pt.radius
+		paint_strength.value = pt.strength
+		paint_mask.button_pressed = pt.mask
+		paint_front.button_pressed = pt.front_only
+		paint_preview.button_pressed = bool(plugin.settings.get_pref("paint_preview"))
 		options_btn.visible = not s.is_shape()
 		mat_btn.visible = not s.is_shape()
 		var pp := prop_btn.get_popup()
@@ -362,6 +389,7 @@ func sync() -> void:
 		mat_btn.button_pressed = bool(plugin.settings.get_pref("material_panel"))
 		tab_mesh.button_pressed = plugin.tab == 0 or s.is_shape()
 		tab_uv.button_pressed = plugin.tab == 1 and not s.is_shape()
+		tab_paint.button_pressed = plugin.tab == 2 and not s.is_shape()
 		for i in 3:
 			mode_btns[i].button_pressed = s.mode == i + 1
 		xray_btn.button_pressed = s.xray
@@ -444,6 +472,56 @@ func _flat_menu_row(on: bool) -> void:
 		pc.add_theme_stylebox_override(&"panel", StyleBoxEmpty.new())
 	else:
 		pc.remove_theme_stylebox_override(&"panel")
+
+## Paint tab controls: colours, blend, radius, strength, mask, front faces, preview.
+func _build_paint_box() -> void:
+	paint_box = HBoxContainer.new()
+	var sc := EditorInterface.get_editor_scale()
+	paint_col = ColorPickerButton.new()
+	paint_col.tooltip_text = "Primary colour (LMB)"
+	paint_col.custom_minimum_size = Vector2(28, 20) * sc
+	paint_col.edit_alpha = false
+	paint_col.color_changed.connect(func(c): plugin.run_action("paint_set", ["color", c]))
+	paint_box.add_child(paint_col)
+	paint_col2 = ColorPickerButton.new()
+	paint_col2.tooltip_text = "Secondary colour (Ctrl+LMB); X swaps"
+	paint_col2.custom_minimum_size = Vector2(20, 14) * sc
+	paint_col2.edit_alpha = false
+	paint_col2.color_changed.connect(func(c): plugin.run_action("paint_set", ["color2", c]))
+	paint_box.add_child(paint_col2)
+	paint_blend = OptionButton.new()
+	paint_blend.flat = true
+	paint_blend.focus_mode = Control.FOCUS_NONE
+	paint_blend.tooltip_text = "Blend mode"
+	for b in plugin.paint.BLENDS:
+		paint_blend.add_item(b[1])
+	paint_blend.item_selected.connect(func(i): plugin.run_action("paint_set", ["blend", plugin.paint.BLENDS[i][0]]))
+	paint_box.add_child(paint_blend)
+	paint_radius = SpinBox.new()
+	paint_radius.min_value = 2
+	paint_radius.max_value = 500
+	paint_radius.suffix = "px"
+	paint_radius.tooltip_text = "Brush radius (F)"
+	paint_radius.value_changed.connect(func(v): if not _syncing: plugin.run_action("paint_set", ["radius", v]))
+	paint_box.add_child(paint_radius)
+	paint_strength = SpinBox.new()
+	paint_strength.min_value = 0.0
+	paint_strength.max_value = 1.0
+	paint_strength.step = 0.05
+	paint_strength.tooltip_text = "Brush strength (Shift+F)"
+	paint_strength.value_changed.connect(func(v): if not _syncing: plugin.run_action("paint_set", ["strength", v]))
+	paint_box.add_child(paint_strength)
+	paint_mask = _toggle("Mask", "Paint only the selected faces (face selection masking)", null)
+	paint_mask.toggled.connect(func(on): if not _syncing: plugin.run_action("paint_set", ["mask", on]))
+	paint_box.add_child(paint_mask)
+	paint_front = _toggle("Front Faces", "Paint only faces facing the view", null)
+	paint_front.toggled.connect(func(on): if not _syncing: plugin.run_action("paint_set", ["front_only", on]))
+	paint_box.add_child(paint_front)
+	paint_preview = _toggle("Preview", "Show the vertex colours instead of the material while painting", null)
+	paint_preview.toggled.connect(func(on): if not _syncing: plugin.run_action("paint_set", ["preview", on]))
+	paint_box.add_child(paint_preview)
+	paint_box.add_child(VSeparator.new())
+	edit_bar.add_child(paint_box)
 
 ## "Material" toggles the material slot strip right of the 3D view (PfMatPanel).
 func _build_material_panel(_base: Control) -> void:

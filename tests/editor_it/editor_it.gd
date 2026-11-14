@@ -149,6 +149,7 @@ func _run() -> void:
 	await _test_merge_after_box(root)
 	await _test_world_uv_ops(root)
 	await _test_view_selected(root)
+	await _test_vertex_paint(root)
 	await _test_local_view(root, cube)
 	await _test_exit_and_save(root, cube)
 	_finish()
@@ -1787,6 +1788,70 @@ func _test_view_selected(root: Node) -> void:
 	check(fwd.angle_to(to_c) < 0.05, "view centred on the selected face (%.3f rad)" % fwd.angle_to(to_c))
 	check(cam.global_position.distance_to(center) < d0 * 0.5, "zoomed in on the small selection (%.2f -> %.2f)" % [d0, cam.global_position.distance_to(center)])
 	key(KEY_TAB)
+	grid.get_parent().remove_child(grid)
+	grid.queue_free()
+	await frames()
+
+
+func _corner_color(v: int) -> Color:
+	var m = pf.session.mesh
+	for fi in m.faces.size():
+		var k: int = Array(m.faces[fi]).find(v)
+		if k >= 0:
+			return m.colors[fi][k]
+	return Color.BLACK
+
+func _test_vertex_paint(root: Node) -> void:
+	print("== Paint tab (Vertex Paint)")
+	pf.run_action("add_object", "grid")
+	await frames(5)
+	var grid: MeshInstance3D = root.get_child(root.get_child_count() - 1)
+	look(Vector3(0.0, 6, 0.01), Vector3(0, 0, 0))
+	await frames()
+	pf.run_action("tab", 2)
+	check(pf.ui.paint_box.visible and pf.ui.tab_paint.button_pressed, "Paint tab with its controls")
+	pf.paint.color = Color(1, 0, 0)
+	pf.paint.radius = 20.0
+	pf.paint.strength = 1.0
+	var c := _nearest_vert(Vector3.ZERO)
+	var far := _nearest_vert(Vector3(0.8, 0, 0.8))
+	var p := screen(grid, Vector3.ZERO)
+	move(p)
+	button(MOUSE_BUTTON_LEFT, p, true)
+	move(p + Vector2(1, 0))
+	button(MOUSE_BUTTON_LEFT, p + Vector2(1, 0), false)
+	check(pf.session.mesh.has_colors and _corner_color(c).is_equal_approx(Color(1, 0, 0)) and _corner_color(far) == Color.WHITE, "stroke paints under the brush only")
+	await undo(grid)
+	check(_corner_color(c) == Color.WHITE, "Ctrl+Z undoes the stroke")
+	pf.run_action("tab", 0)
+	key(KEY_3)
+	pf.session.select_many([0], "set")
+	pf.run_action("tab", 2)
+	pf.paint.color = Color(0, 1, 0)
+	key(KEY_K, true)
+	var f0: PackedInt32Array = pf.session.mesh.faces[0]
+	var shared := -1
+	for fi in range(1, pf.session.mesh.faces.size()):
+		if Array(pf.session.mesh.faces[fi]).has(f0[1]):
+			shared = fi
+	var k: int = Array(pf.session.mesh.faces[shared]).find(f0[1])
+	check(pf.session.mesh.colors[0][1] == Color(0, 1, 0) and pf.session.mesh.colors[shared][k] == Color.WHITE, "Shift+K fills only the selected face (sharp border)")
+	key(KEY_X)
+	check(pf.paint.color == Color(0, 0, 0) and pf.paint.color2 == Color(0, 1, 0), "X swaps primary / secondary")
+	move(screen(grid, pf.session.mesh.face_center(0)))
+	key(KEY_S)
+	check(pf.paint.color == Color(0, 1, 0), "S samples the colour under the mouse")
+	move(Vector2(vp.size) * 0.5)
+	key(KEY_F)
+	move(Vector2(vp.size) * 0.5 + Vector2(60, 0))
+	click(Vector2(vp.size) * 0.5 + Vector2(60, 0))
+	check(pf.paint.radius > 20.0 and pf._radial.is_empty(), "F: radius follows the mouse, LMB confirms (%d px)" % pf.paint.radius)
+	key(KEY_G)
+	check(not pf.modal.active, "G does nothing in the Paint tab")
+	pf.run_action("tab", 0)
+	key(KEY_TAB)
+	var arr := grid.mesh.surface_get_arrays(0)
+	check(arr[Mesh.ARRAY_COLOR] != null, "saved ArrayMesh has vertex colours")
 	grid.get_parent().remove_child(grid)
 	grid.queue_free()
 	await frames()

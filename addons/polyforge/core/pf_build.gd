@@ -19,6 +19,8 @@ static func build(m, target: ArrayMesh = null, fast := false, skip_faces := {}, 
 	var am := target if target != null else ArrayMesh.new()
 	# Keep surface materials if the slot list is empty (e.g. first build).
 	am.clear_surfaces()
+	if m.has_colors:
+		m.fill_colors()
 	var corner_normals := compute_corner_normals(m)
 	var by_mat := {}
 	for fi in m.faces.size():
@@ -49,12 +51,14 @@ static func _surface_arrays(m, face_list: Array, corner_normals: Array, fast: bo
 	var nrm := PackedVector3Array()
 	var uv := PackedVector2Array()
 	var uv2 := PackedVector2Array()
+	var col := PackedColorArray()
 	for fi in face_list:
 		var f: PackedInt32Array = m.faces[fi]
 		var tris := triangulate(m, fi)
 		var cn: PackedVector3Array = corner_normals[fi]
 		var fu: PackedVector2Array = m.uvs[fi]
 		var fu2: PackedVector2Array = m.uv2s[fi]
+		var fc: PackedColorArray = m.colors[fi] if m.has_colors else PackedColorArray()
 		for t in range(0, tris.size(), 3):
 			# Flip winding for Godot: (a, c, b).
 			for k in [tris[t], tris[t + 2], tris[t + 1]]:
@@ -63,6 +67,8 @@ static func _surface_arrays(m, face_list: Array, corner_normals: Array, fast: bo
 				uv.append(fu[k])
 				if m.has_uv2:
 					uv2.append(fu2[k])
+				if m.has_colors:
+					col.append(fc[k] if k < fc.size() else Color.WHITE)
 	if pos.is_empty():
 		return []
 	var arrays := []
@@ -72,6 +78,8 @@ static func _surface_arrays(m, face_list: Array, corner_normals: Array, fast: bo
 	arrays[Mesh.ARRAY_TEX_UV] = uv
 	if m.has_uv2:
 		arrays[Mesh.ARRAY_TEX_UV2] = uv2
+	if m.has_colors:
+		arrays[Mesh.ARRAY_COLOR] = col
 	if fast:
 		return arrays
 	var st := SurfaceTool.new()

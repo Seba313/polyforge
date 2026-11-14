@@ -58,6 +58,7 @@ static func split_face(m, fi: int, a: int, b: int) -> bool:
 	m.faces[fi] = f1
 	m.uvs[fi] = u1
 	m.uv2s[fi] = u21
+	m.colors[fi] = PackedColorArray()
 	PfOps.add_face(m, f2, u2, mat, smooth, u22)
 	m.invalidate()
 	return true
@@ -212,6 +213,7 @@ static func loop_cut(m, edge: Vector2i, cuts := 1) -> Dictionary:
 				m.faces[fi] = f
 				m.uvs[fi] = uv
 				m.uv2s[fi] = u2
+				m.colors[fi] = PackedColorArray()
 				break
 	PfOps.remove_faces(m, kill)
 	for a in adds:
@@ -437,6 +439,7 @@ static func bevel_edges(m, se: Dictionary, segments := 1) -> Dictionary:
 		m.faces[fi] = f
 		m.uvs[fi] = uv
 		m.uv2s[fi] = u2
+		m.colors[fi] = PackedColorArray()
 	# Profile points and strips along every selected edge.
 	var profile := {}   # [edge, v] -> Array of ids from F1 side to F2 side (incl. ends)
 	var strips := {}
@@ -520,6 +523,7 @@ static func bevel_edges(m, se: Dictionary, segments := 1) -> Dictionary:
 					m.faces[fi] = f
 					m.uvs[fi] = uv
 					m.uv2s[fi] = u2
+					m.colors[fi] = PackedColorArray()
 					break
 	# Caps where 3+ distinct points remain around a vertex.
 	for c in caps:
@@ -655,6 +659,7 @@ static func bevel_verts(m, sv: Dictionary) -> Dictionary:
 			m.faces[fi] = f
 			m.uvs[fi] = uv
 			m.uv2s[fi] = u2
+			m.colors[fi] = PackedColorArray()
 			if ring.is_empty() or ring[ring.size() - 1] != a:
 				ring.append(a)
 			ring.append(b)
@@ -689,6 +694,7 @@ static func extract(m, fs: Dictionary):
 	out.world_uv = m.world_uv
 	out.texel_density = m.texel_density
 	out.has_uv2 = m.has_uv2
+	out.has_colors = m.has_colors
 	var map := {}
 	for fi in fs:
 		var f := PackedInt32Array()
@@ -696,7 +702,8 @@ static func extract(m, fs: Dictionary):
 			if not map.has(v):
 				map[v] = out.add_vertex(m.verts[v])
 			f.append(map[v])
-		PfOps.add_face(out, f, m.uvs[fi].duplicate(), m.face_mat[fi], m.face_smooth[fi] != 0, m.uv2s[fi].duplicate())
+		var nfi: int = PfOps.add_face(out, f, m.uvs[fi].duplicate(), m.face_mat[fi], m.face_smooth[fi] != 0, m.uv2s[fi].duplicate())
+		out.colors[nfi] = m.colors[fi].duplicate()
 	for e in m.sharp_edges:
 		if map.has(e.x) and map.has(e.y):
 			out.sharp_edges[ekey(map[e.x], map[e.y])] = true

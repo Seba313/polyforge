@@ -19,6 +19,10 @@ var faces: Array[PackedInt32Array] = []
 var uvs: Array[PackedVector2Array] = []    # per face, one UV per corner
 var uv2s: Array[PackedVector2Array] = []   # per face; used only when has_uv2
 var has_uv2 := false
+## Vertex colours per face corner (Blender Color Attribute, Face Corner). An
+## empty array = not set yet (new geometry): fill_colors() derives it.
+var colors: Array[PackedColorArray] = []
+var has_colors := false
 var face_mat := PackedInt32Array()
 var face_smooth := PackedByteArray()
 ## Session-only tag per face (multi-object edit: index of the owning object,
@@ -69,6 +73,7 @@ func add_face(idx: PackedInt32Array, corner_uvs := PackedVector2Array(), mat := 
 	var u2 := PackedVector2Array()
 	u2.resize(idx.size())
 	uv2s.append(u2)
+	colors.append(PackedColorArray())
 	face_mat.append(mat)
 	face_smooth.append(1 if smooth else 0)
 	face_tag.append(-1)
@@ -96,12 +101,17 @@ func to_dict() -> Dictionary:
 	var flat := PackedInt32Array()
 	var fuv := PackedVector2Array()
 	var fuv2 := PackedVector2Array()
+	var fcol := PackedColorArray()
+	if has_colors:
+		fill_colors()
 	for i in faces.size():
 		sizes.append(faces[i].size())
 		flat.append_array(faces[i])
 		fuv.append_array(uvs[i])
 		if has_uv2:
 			fuv2.append_array(uv2s[i])
+		if has_colors:
+			fcol.append_array(colors[i])
 	var sharp := PackedInt32Array()
 	for k in sharp_edges:
 		sharp.append(k.x)
@@ -118,6 +128,8 @@ func to_dict() -> Dictionary:
 		"uv": fuv,
 		"uv2": fuv2,
 		"has_uv2": has_uv2,
+		"colors": fcol,
+		"has_colors": has_colors,
 		"face_mat": face_mat.duplicate(),
 		"face_smooth": face_smooth.duplicate(),
 		"face_tag": face_tag.duplicate(),
@@ -139,14 +151,18 @@ func from_dict(d: Dictionary) -> bool:
 	var fuv: PackedVector2Array = d.get("uv", PackedVector2Array())
 	var fuv2: PackedVector2Array = d.get("uv2", PackedVector2Array())
 	has_uv2 = bool(d.get("has_uv2", false))
+	var fcol: PackedColorArray = d.get("colors", PackedColorArray())
+	has_colors = bool(d.get("has_colors", false))
 	faces.clear()
 	uvs.clear()
 	uv2s.clear()
+	colors.clear()
 	var o := 0
 	for s in sizes:
 		faces.append(flat.slice(o, o + s))
 		uvs.append(fuv.slice(o, o + s) if fuv.size() >= o + s else _zeros(s))
 		uv2s.append(fuv2.slice(o, o + s) if has_uv2 and fuv2.size() >= o + s else _zeros(s))
+		colors.append(fcol.slice(o, o + s) if has_colors and fcol.size() >= o + s else PackedColorArray())
 		o += s
 	face_mat = (d.get("face_mat", PackedInt32Array()) as PackedInt32Array).duplicate()
 	face_smooth = (d.get("face_smooth", PackedByteArray()) as PackedByteArray).duplicate()
@@ -343,8 +359,12 @@ func append_mesh(other, xf := Transform3D.IDENTITY) -> PackedInt32Array:
 		var nf := add_face(f, other.uvs[fi].duplicate(), other.face_mat[fi], other.face_smooth[fi] != 0)
 		if other.has_uv2:
 			uv2s[nf] = other.uv2s[fi].duplicate()
+		if other.has_colors:
+			colors[nf] = other.colors[fi].duplicate()
 	if other.has_uv2:
 		has_uv2 = true
+	if other.has_colors:
+		has_colors = true
 	for k in other.sharp_edges:
 		sharp_edges[Vector2i(k.x + base, k.y + base)] = true
 	for k in other.seam_edges:
@@ -353,9 +373,62 @@ func append_mesh(other, xf := Transform3D.IDENTITY) -> PackedInt32Array:
 		wire_edges[Vector2i(k.x + base, k.y + base)] = true
 	return new_idx
 
+## Gives every unset corner colour (new geometry from an operator) a value:
+## the colour the same vertex has in a neighbouring face, else the average of
+## the face's known corners, else white.
+func fill_colors() -> void:
+	var at := {}
+	for fi in faces.size():
+		if colors[fi].size() == faces[fi].size():
+			for k in faces[fi].size():
+				at[faces[fi][k]] = colors[fi][k]
+		elif not colors[fi].is_empty():
+			colors[fi] = PackedColorArray()
+	for fi in faces.size():
+		if not colors[fi].is_empty():
+			continue
+		var f: PackedInt32Array = faces[fi]
+		var c := PackedColorArray()
+		c.resize(f.size())
+		var sum := Color(0, 0, 0, 0)
+		var n := 0
+		for k in f.size():
+			if at.has(f[k]):
+				c[k] = at[f[k]]
+				sum += c[k]
+				n += 1
+		var fallback: Color = sum / float(n) if n > 0 else Color.WHITE
+		for k in f.size():
+			if not at.has(f[k]):
+				c[k] = fallback
+		colors[fi] = c
+
+## Unset corner colours taken from the nearest vertex of `src` (operators that
+## rebuild the whole mesh, e.g. Boolean).
+func transfer_colors(src) -> void:
+	src.fill_colors()
+	var cols := {}
+	for fi in src.faces.size():
+		for k in src.faces[fi].size():
+			cols[src.faces[fi][k]] = src.colors[fi][k]
+	for fi in faces.size():
+		if not colors[fi].is_empty():
+			continue
+		var c := PackedColorArray()
+		for v in faces[fi]:
+			var best := -1
+			var bd := INF
+			for sv in cols:
+				var d: float = verts[v].distance_squared_to(src.verts[sv])
+				if d < bd:
+					bd = d
+					best = sv
+			c.append(cols[best] if best >= 0 else Color.WHITE)
+		colors[fi] = c
+
 ## Checks internal consistency. Returns an empty string when valid.
 func validate() -> String:
-	if uvs.size() != faces.size() or uv2s.size() != faces.size():
+	if uvs.size() != faces.size() or uv2s.size() != faces.size() or colors.size() != faces.size():
 		return "uv arrays out of sync"
 	if face_mat.size() != faces.size() or face_smooth.size() != faces.size():
 		return "face attribute arrays out of sync"
