@@ -45,7 +45,9 @@ PL = {
 "Save Mesh As…": "Zapisz siatkę jako…", "Custom Texel Density": "Własna gęstość tekseli", "Text resource": "Zasób tekstowy", "Binary resource": "Zasób binarny",
 "World-Scale UV on: UVs projected at %d px/m": "UV w skali świata wł.: UV rzutowane z gęstością %d px/m", "World-Scale UV off": "UV w skali świata wył.",
 "Material slots: assign to selected faces, select by slot": "Sloty materiałów: przypisz do zaznaczonych ścian, zaznacz według slotu",
-"Assign": "Przypisz", "(empty)": "(pusty)", "%d: %s  ·  %d faces": "%d: %s  ·  ścian: %d",
+"Assign": "Przypisz", "Add": "Dodaj", "Slot %d · %d faces": "Slot %d · ścian: %d",
+"Assign material to the selected faces": "Przypisz materiał do zaznaczonych ścian", "Select faces with this material": "Zaznacz ściany z tym materiałem",
+"Deselect faces with this material": "Odznacz ściany z tym materiałem", "Material slots panel: assign to selected faces, select by slot": "Panel slotów materiałów: przypisz do zaznaczonych ścian, zaznacz według slotu", "(empty)": "(pusty)", "%d: %s  ·  %d faces": "%d: %s  ·  ścian: %d",
 "Add Material Slot": "Dodaj slot materiału", "Remove Material Slot": "Usuń slot materiału", "Set Material": "Ustaw materiał", "Assign Material": "Przypisz materiał",
 "Select Material": "Zaznacz materiał", "Deselect Material": "Odznacz materiał",
 "Material: Assign to Selected": "Materiał: przypisz do zaznaczonych", "Material: Select Slot": "Materiał: zaznacz slot", "Material: Add Slot": "Materiał: dodaj slot",
@@ -114,7 +116,7 @@ PL = {
 # 3D cursor / snap menu
 "Selection to Cursor": "Zaznaczenie do kursora", "Selection to Cursor (Keep Offset)": "Zaznaczenie do kursora (zachowaj przesunięcie)", "Selection to Active": "Zaznaczenie do aktywnego",
 "Cursor to Selected": "Kursor do zaznaczenia", "Cursor to World Origin": "Kursor do środka świata", "Cursor to Active": "Kursor do aktywnego", "No active element": "Brak aktywnego elementu",
-"Snap Menu": "Menu przyciągania",
+"Snap Menu": "Menu przyciągania", "View Selected": "Pokaż zaznaczone",
 # messages
 "Removed %d vertices": "Usunięto wierzchołki: %d",
 "Collision shape is empty — it no longer collides with anything": "Kształt kolizji jest pusty — z niczym już nie koliduje",

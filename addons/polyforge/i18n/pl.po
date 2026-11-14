@@ -54,6 +54,9 @@ msgstr "Kursor 3D"
 msgid "Active Element"
 msgstr "Aktywny element"
 
+msgid "Add"
+msgstr "Dodaj"
+
 msgid "Add Circle"
 msgstr "Dodaj okrąg"
 
@@ -113,6 +116,9 @@ msgstr "Przypisz"
 
 msgid "Assign Material"
 msgstr "Przypisz materiał"
+
+msgid "Assign material to the selected faces"
+msgstr "Przypisz materiał do zaznaczonych ścian"
 
 msgid "At Center"
 msgstr "W środku"
@@ -326,6 +332,9 @@ msgstr "Odznacz połączone (pod kursorem)"
 
 msgid "Deselect Material"
 msgstr "Odznacz materiał"
+
+msgid "Deselect faces with this material"
+msgstr "Odznacz ściany z tym materiałem"
 
 msgid "Difference"
 msgstr "Różnica"
@@ -617,6 +626,9 @@ msgstr "Oznacz jako ostre"
 
 msgid "Material"
 msgstr "Materiał"
+
+msgid "Material slots panel: assign to selected faces, select by slot"
+msgstr "Panel slotów materiałów: przypisz do zaznaczonych ścian, zaznacz według slotu"
 
 msgid "Material slots: assign to selected faces, select by slot"
 msgstr "Sloty materiałów: przypisz do zaznaczonych ścian, zaznacz według slotu"
@@ -996,6 +1008,9 @@ msgstr "Zaznacz ściany do rozdzielenia"
 msgid "Select faces to unwrap"
 msgstr "Zaznacz ściany do rozłożenia"
 
+msgid "Select faces with this material"
+msgstr "Zaznacz ściany z tym materiałem"
+
 msgid "Select objects for Local View"
 msgstr "Zaznacz obiekty do widoku lokalnego"
 
@@ -1079,6 +1094,9 @@ msgstr "Zmniejsz/Pogrub"
 
 msgid "Size"
 msgstr "Rozmiar"
+
+msgid "Slot %d · %d faces"
+msgstr "Slot %d · ścian: %d"
 
 msgid "Smart UV Project"
 msgstr "Inteligentne rzutowanie UV"
@@ -1331,6 +1349,9 @@ msgstr "Wierzchołki  %d / %d"
 
 msgid "View"
 msgstr "Widok"
+
+msgid "View Selected"
+msgstr "Pokaż zaznaczone"
 
 msgid "Width"
 msgstr "Szerokość"

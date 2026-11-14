@@ -145,6 +145,10 @@ func _run() -> void:
 	await _test_collision_shapes(root)
 	await _test_stage4(root)
 	await _test_stage4b(root)
+	await _test_uv_split(cube)
+	await _test_merge_after_box(root)
+	await _test_world_uv_ops(root)
+	await _test_view_selected(root)
 	await _test_local_view(root, cube)
 	await _test_exit_and_save(root, cube)
 	_finish()
@@ -1570,10 +1574,29 @@ func _test_stage4(root: Node) -> void:
 	pf.run_action("select_none")
 	pf.run_action("mat_select")
 	check(pf.session.sel_f.size() == 2, "material panel Select")
-	pf.ui.open_materials()
+	pf.ui.mat_btn.button_pressed = true
 	await frames()
-	check(pf.ui.mat_panel.visible and pf.ui.mat_list.item_count == 2, "material panel lists 2 slots")
-	pf.ui.mat_panel.hide()
+	var slots: Array = pf.mat_panel._list.get_children().filter(func(c): return not c.is_queued_for_deletion())
+	check(pf.mat_panel.visible and slots.size() == 2 and slots[1].get_child(1) is EditorResourcePicker and slots[1].get_child(1).edited_resource == red,
+		"Material toggles the side strip: 2 slots, thumbnail picker with the slot material")
+	pf.session.select_many([2], "set")
+	(slots[1].get_child(2).get_child(0) as Button).pressed.emit()
+	check(pf.session.mesh.face_mat[2] == 1, "slot icon Assign: selected face gets that slot")
+	pf.run_action("select_all")
+	(slots[1].get_child(2).get_child(2) as Button).pressed.emit()
+	check(pf.session.sel_f.size() == pf.session.mesh.faces.size() - 3, "slot icon Deselect: its 3 faces deselected")
+	await frames()
+	var add_btn: Button = pf.mat_panel._list.get_parent().get_child(2)
+	add_btn.pressed.emit()
+	await frames()
+	check(pf.mat_panel._list.get_children().filter(func(c): return not c.is_queued_for_deletion()).size() == 3, "Add creates a third slot")
+	await undo(grid)
+	await undo(grid)
+	pf.ui.mat_btn.button_pressed = false
+	await frames()
+	check(not pf.mat_panel.visible, "Material toggles the strip off")
+	pf.run_action("select_none")
+	pf.active_slot = 1
 	pf.run_action("mat_slot_remove")
 	check(grid.mesh.get_surface_count() == 1, "removing the slot moves its faces back to slot 0")
 	key(KEY_TAB)
@@ -1639,6 +1662,130 @@ func _test_stage4b(root: Node) -> void:
 	key(KEY_TAB, true)
 	pf.run_action("snap_target", "increment")
 	check(not bool(pf.settings.get_pref("snap_on")), "Shift+Tab turns snapping off")
+	key(KEY_TAB)
+	grid.get_parent().remove_child(grid)
+	grid.queue_free()
+	await frames()
+
+
+func _test_uv_split(cube: MeshInstance3D) -> void:
+	print("== UV Edit split: the divider moves both ways, width remembered")
+	await select(cube)
+	if pf.session == null:
+		key(KEY_TAB)
+	pf.run_action("tab", 1)
+	await frames(5)
+	var n: Node = pf.uv_panel
+	while n != null and not (n.get_parent() is SplitContainer):
+		n = n.get_parent()
+	var split := n.get_parent() as SplitContainer
+	var total: float = split.size.x
+	split.split_offset += int(250.0 - pf.uv_panel.size.x) * (1 if split.get_child(0) == n else -1)
+	await frames(3)
+	var narrow: float = pf.uv_panel.size.x
+	check(narrow < total * 0.4 and narrow < 300.0, "UV panel can be made narrow (%d px of %d)" % [narrow, total])
+	pf.run_action("tab", 0)
+	await frames(3)
+	pf.run_action("tab", 1)
+	await frames(5)
+	check(absf(pf.uv_panel.size.x - narrow) < 4.0 and pf.uv_panel.custom_minimum_size.x <= 200.0, "width restored without raising the minimum (%d px)" % pf.uv_panel.size.x)
+	pf.run_action("tab", 0)
+	key(KEY_TAB)
+	await frames()
+
+
+func _test_merge_after_box(root: Node) -> void:
+	print("== Merge At First / At Last after box-selecting vertices one by one")
+	pf.run_action("add_object", "grid")
+	await frames(5)
+	var grid: MeshInstance3D = root.get_child(root.get_child_count() - 1)
+	look(Vector3(0.0, 6, 0.01), Vector3(0, 0, 0))
+	await frames()
+	key(KEY_1)
+	pf.run_action("select_none")
+	var a := _nearest_vert(Vector3(-0.4, 0, 0))
+	var b := _nearest_vert(Vector3(0.4, 0, 0))
+	var pa := screen(grid, Vector3(-0.4, 0, 0))
+	var pb := screen(grid, Vector3(0.4, 0, 0))
+	drag(pa - Vector2(4, 4), pa + Vector2(4, 4))
+	drag(pb - Vector2(4, 4), pb + Vector2(4, 4), true)
+	check(pf.session.sel_v.size() == 2 and pf.session.history == [a, b], "box, then Shift+box: history follows the order (%s)" % [pf.session.history])
+	move(pb)
+	key(KEY_M)
+	var last_ok := false
+	for i in pf.ui.op_menu.item_count:
+		if pf.ui.op_menu.get_item_text(i) == "At Last":
+			last_ok = not pf.ui.op_menu.is_item_disabled(i)
+	check(last_ok, "Merge menu: At Last enabled")
+	pf.ui.op_menu.hide()
+	await frames()
+	pf.run_action("merge", ["last"])
+	check(pf.session.mesh.verts.size() == 120 and pf.session.mesh.verts[_nearest_vert(Vector3(0.4, 0, 0))].is_equal_approx(Vector3(0.4, 0, 0)), "At Last merges into the second box-selected vertex")
+	key(KEY_TAB)
+	grid.get_parent().remove_child(grid)
+	grid.queue_free()
+	await frames()
+
+
+func _world_uv_ok() -> bool:
+	var m = pf.session.mesh
+	var ref = m.duplicate_mesh()
+	PfUv.cube_project_world(ref, pf.settings.density_for(ref))
+	for fi in m.faces.size():
+		for k in m.uvs[fi].size():
+			if not m.uvs[fi][k].is_equal_approx(ref.uvs[fi][k]):
+				return false
+	return true
+
+func _test_world_uv_ops(root: Node) -> void:
+	print("== World-Scale UV stays correct after Merge / Bevel")
+	pf.run_action("add_object", "cube")
+	await frames(5)
+	var obj: MeshInstance3D = root.get_child(root.get_child_count() - 1)
+	pf.run_action("world_uv", true)
+	key(KEY_1)
+	var m = pf.session.mesh
+	var e: Vector2i = m.edges()[0]
+	pf.session.select_many([e.x], "set")
+	pf.session.select_many([e.y], "add", true)
+	pf.session.history = [e.x, e.y]
+	pf.run_action("merge", ["last"])
+	check(pf.session.mesh.verts.size() == 7 and _world_uv_ok(), "Merge At Last: changed faces re-projected at world scale")
+	await undo(obj)
+	key(KEY_2)
+	pf.session.select_many([pf.session.mesh.edges()[0]], "set")
+	pf._bevel_now(false, {"width": 0.3, "segments": 2})
+	check(pf.session.mesh.faces.size() > 6 and _world_uv_ok(), "Bevel: neighbours and new faces at world scale")
+	key(KEY_1)
+	key(KEY_TAB)
+	obj.get_parent().remove_child(obj)
+	obj.queue_free()
+	await frames()
+
+
+func _test_view_selected(root: Node) -> void:
+	print("== Numpad . View Selected")
+	pf.run_action("add_object", "grid")
+	await frames(5)
+	var grid: MeshInstance3D = root.get_child(root.get_child_count() - 1)
+	grid.global_position = Vector3(6, 0, -4)
+	look(Vector3(0, 8, 8), Vector3(0, 0, 0))
+	var vpe: Node = vp.get_parent().get_parent()
+	for c in vpe.get_children():
+		if c is Control and (c as Control).focus_mode != Control.FOCUS_NONE and not (c is SubViewportContainer):
+			(c as Control).grab_focus()
+	await frames(5)
+	key(KEY_3)
+	pf.session.select_many([0], "set")
+	var center: Vector3 = grid.global_transform * pf.session.mesh.face_center(0)
+	var d0 := cam.global_position.distance_to(center)
+	key(KEY_KP_PERIOD)
+	await frames(150)
+	var fwd := -cam.global_transform.basis.z
+	var to_c := (center - cam.global_position).normalized()
+	check(pf.session != null and pf.session.node == grid, "still in Edit Mode on the same object")
+	check(fwd.angle_to(to_c) < 0.05, "view centred on the selected face (%.3f rad)" % fwd.angle_to(to_c))
+	check(cam.global_position.distance_to(center) < d0 * 0.5, "zoomed in on the small selection (%.2f -> %.2f)" % [d0, cam.global_position.distance_to(center)])
 	key(KEY_TAB)
 	grid.get_parent().remove_child(grid)
 	grid.queue_free()

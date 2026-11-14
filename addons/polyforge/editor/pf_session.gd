@@ -210,7 +210,9 @@ func invert() -> void:
 
 ## Replaces / extends the selection with `elems` (Array). `mode_op`:
 ## "set", "add", "sub".
-func select_many(elems: Array, mode_op := "set") -> void:
+## `track`: newly selected elements join the selection history (box / circle
+## select), so Merge At First / At Last work with region-selected vertices.
+func select_many(elems: Array, mode_op := "set", track := false) -> void:
 	var p := primary()
 	if mode_op == "set":
 		p.clear()
@@ -220,6 +222,8 @@ func select_many(elems: Array, mode_op := "set") -> void:
 			p.erase(x)
 			history.erase(x)
 		else:
+			if track and not p.has(x):
+				history.append(x)
 			p[x] = true
 	_selection_changed()
 

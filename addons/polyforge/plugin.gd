@@ -25,6 +25,7 @@ const PfSettings := preload("res://addons/polyforge/editor/pf_settings.gd")
 const PfUi := preload("res://addons/polyforge/editor/pf_ui.gd")
 const PfLocalView := preload("res://addons/polyforge/editor/pf_local_view.gd")
 const PfUvPanel := preload("res://addons/polyforge/editor/pf_uv_panel.gd")
+const PfMatPanel := preload("res://addons/polyforge/editor/pf_mat_panel.gd")
 const PfSaveGuard := preload("res://addons/polyforge/editor/pf_save_guard.gd")
 const PfShape := preload("res://addons/polyforge/core/pf_shape.gd")
 const PfI18n := preload("res://addons/polyforge/editor/pf_i18n.gd")
@@ -51,6 +52,7 @@ var modal = null
 var ui = null
 var local_view = null
 var uv_panel: Control = null
+var mat_panel: Control = null
 var tab := 0                 # 0 = Mesh Edit, 1 = UV Edit
 var pivot_mode := "median"
 var orientation := "global"  # Transform Orientation (global / local / normal / view)
@@ -86,6 +88,7 @@ var _message := ""
 var _message_until := 0
 var _lv_accum := 0.0
 var _pass_f_until := 0
+var _viewing := false   # View Selected: temporary selection swap, keep Edit Mode
 var _locked_node: Node3D = null   # temporary _edit_lock_ that hides Godot's gizmo
 var _guard: Node = null
 var _extra_locked: Array = []   # other objects locked in multi-object edit
@@ -117,6 +120,10 @@ func _enter_tree() -> void:
 	uv_panel.on_key = _uv_panel_key
 	uv_panel.plugin = self
 	add_control_to_container(CONTAINER_SPATIAL_EDITOR_SIDE_LEFT, uv_panel)
+	mat_panel = PfMatPanel.new()
+	mat_panel.plugin = self
+	mat_panel.visible = false
+	add_control_to_container(CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT, mat_panel)
 	tab = int(settings.get_pref("last_tab"))
 	orientation = str(settings.get_pref("orientation"))
 	gizmo = PfGizmo.new()
@@ -141,6 +148,8 @@ func _exit_tree() -> void:
 	ui.teardown()
 	remove_control_from_container(CONTAINER_SPATIAL_EDITOR_SIDE_LEFT, uv_panel)
 	uv_panel.queue_free()
+	remove_control_from_container(CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT, mat_panel)
+	mat_panel.queue_free()
 	overlay.free_all()
 
 func _handles(object: Object) -> bool:
@@ -216,7 +225,7 @@ func _set_gizmo_lock(n: Node3D, on: bool) -> void:
 		sel.add_node(n)
 
 func _on_selection_changed() -> void:
-	if session == null:
+	if session == null or _viewing:
 		return
 	if not EditorInterface.get_selection().get_selected_nodes().has(session.node):
 		exit_edit()
@@ -395,6 +404,8 @@ func _on_session_changed() -> void:
 		msg(session.note, 4.0)
 		session.note = ""
 	overlay.update(session)
+	if mat_panel.visible:
+		mat_panel.refresh()
 	uv_panel.queue_redraw()
 	update_overlays()
 
@@ -437,13 +448,33 @@ func _pf_restore(node_id: int, snap: Dictionary) -> void:
 		m.from_dict(snap["mesh"])
 		PfBuild.build(m, (n as MeshInstance3D).mesh)
 
+## Remembered UV panel width, set through the split (the minimum stays small,
+## so the divider can move both ways).
+func _restore_uv_width(width: float) -> void:
+	var n: Node = uv_panel
+	while n != null and not (n.get_parent() is SplitContainer):
+		n = n.get_parent()
+	if n == null:
+		return
+	var split := n.get_parent() as SplitContainer
+	split.split_offset += int(width - uv_panel.size.x) * (1 if split.get_child(0) == n else -1)
+	uv_panel.frame_unit.call_deferred()
+
+func _apply_mat_panel() -> void:
+	mat_panel.visible = session != null and not session.is_shape() and bool(settings.get_pref("material_panel"))
+	if mat_panel.visible:
+		mat_panel.refresh()
+	mat_panel.queue_redraw()
+
 func _apply_tab() -> void:
+	_apply_mat_panel()
 	var show: bool = session != null and tab == 1 and not session.is_shape()
 	if uv_panel.visible and not show:
 		settings.set_pref("uv_panel_width", int(uv_panel.size.x))
 	if show and not uv_panel.visible:
-		uv_panel.custom_minimum_size.x = maxf(200.0, float(settings.get_pref("uv_panel_width")))
+		uv_panel.custom_minimum_size.x = 200.0
 		uv_panel.visible = true
+		_restore_uv_width.call_deferred(maxf(200.0, float(settings.get_pref("uv_panel_width"))))
 		uv_panel.frame_unit.call_deferred()
 	elif not show:
 		uv_panel.visible = false
@@ -707,7 +738,7 @@ func _loop_elements(camera: Camera3D, pos: Vector2, ring: bool) -> Array:
 
 func _apply_region_select(elems: Array, op: String, label: String) -> void:
 	var before: Dictionary = session.snapshot()
-	session.select_many(elems, op)
+	session.select_many(elems, op, true)
 	_commit_selection(label, before)
 
 ## Selection changes are undo steps too (like Blender).
@@ -804,7 +835,7 @@ func _region_input(camera: Camera3D, event: InputEvent) -> int:
 					_lmb_pos = mb.position
 					_box_rect = Rect2(mb.position, Vector2.ZERO)
 				elif _region_drag:
-					session.select_many(PfPicking.in_rect(session, camera, _box_rect), _region_op)
+					session.select_many(PfPicking.in_rect(session, camera, _box_rect), _region_op, true)
 					_end_region(true)
 			else:
 				_circle_paint = (-1 if sub else 1) if mb.pressed else 0
@@ -824,7 +855,7 @@ func _region_input(camera: Camera3D, event: InputEvent) -> int:
 	return STOP
 
 func _circle_apply(camera: Camera3D) -> void:
-	session.select_many(PfPicking.in_circle(session, camera, _mouse, _circle_radius), "sub" if _circle_paint < 0 else "add")
+	session.select_many(PfPicking.in_circle(session, camera, _mouse, _circle_radius), "sub" if _circle_paint < 0 else "add", true)
 
 
 # ==============================================================================
@@ -840,6 +871,8 @@ func run_action(action: String, arg: Variant = null) -> void:
 				enter_edit()
 		"local_view":
 			_toggle_local_view()
+		"view_selected":
+			_view_selected()
 		"tab":
 			tab = int(arg)
 			settings.set_pref("last_tab", tab)
@@ -1201,6 +1234,10 @@ func run_action(action: String, arg: Variant = null) -> void:
 			session.commit_undo({"mat_slot_add": "Add Material Slot", "mat_slot_remove": "Remove Material Slot",
 				"mat_set": "Set Material", "mat_assign": "Assign Material"}[action], before)
 			ui.sync()
+		"mat_panel":
+			settings.set_pref("material_panel", bool(arg))
+			_apply_mat_panel()
+			ui.sync()
 		"mat_select", "mat_deselect":
 			var fs := {}
 			for fi in session.mesh.faces.size():
@@ -1323,6 +1360,7 @@ func _op(label: String, fn: Callable) -> void:
 		session.restore(before)
 		msg(shape_err, 5.0)
 		return
+	_reproject_changed(before)
 	_apply_result(r)
 	session.commit_undo(label, before)
 	if session.kind == "concave":
@@ -1344,6 +1382,31 @@ func _mesh_of(snap: Dictionary):
 	var m = PfMesh.new()
 	m.from_dict(snap["mesh"])
 	return m
+
+## World-Scale UV: faces whose shape changed in an operation (Merge, Bevel,
+## Loop Cut slide…) get the world projection again; untouched faces keep their UVs.
+func _reproject_changed(pre: Dictionary) -> void:
+	var m = session.mesh
+	if not m.world_uv or session.is_shape():
+		return
+	var old = PfMesh.new()
+	old.from_dict(pre["mesh"])
+	var known := {}
+	for fi in old.faces.size():
+		known[_face_key(old, fi)] = true
+	var changed := PackedInt32Array()
+	for fi in m.faces.size():
+		if not known.has(_face_key(m, fi)):
+			changed.append(fi)
+	if not changed.is_empty():
+		PfUv.cube_project_world(m, settings.density_for(m), changed)
+
+static func _face_key(m, fi: int) -> String:
+	var pts := []
+	for v in m.faces[fi]:
+		pts.append(Vector3i((m.verts[v] * 10000.0).round()))
+	pts.sort()
+	return str(pts)
 
 ## New selection + World-Scale UV projection of new faces.
 func _apply_result(r: Dictionary) -> void:
@@ -1678,6 +1741,7 @@ func _bevel_now(verts_only: bool, v: Dictionary) -> void:
 		return
 	session.set_selection_result({"faces": d["faces"]})
 	var w := PfOps2.bevel_update(session.mesh, d, float(v.get("width", 0.0)))
+	_reproject_changed(pre)
 	session.commit_undo("Bevel Vertices" if verts_only else "Bevel", pre)
 	var spec := [["width", "Width", "float", w, 0.0, 1000.0]]
 	if not verts_only:
@@ -1693,6 +1757,7 @@ func _loopcut_now(edge: Vector2i, v: Dictionary) -> void:
 		return
 	_apply_result(data)
 	PfOps2.loop_slide(session.mesh, data, float(v.get("factor", 0.0)))
+	_reproject_changed(pre)
 	session.commit_undo("Loop Cut and Slide", pre)
 	_redo("Loop Cut and Slide", [["cuts", "Number of Cuts", "int", int(v.get("cuts", 1)), 1, 64], ["factor", "Factor", "float", float(v.get("factor", 0.0)), -1.0, 1.0]],
 		func(nv): _loopcut_now(edge, nv))
@@ -1773,6 +1838,7 @@ func _do_loopcut(camera: Camera3D, edge: Vector2i, cuts: int) -> void:
 	_vm_state = {"finish": func(committed: bool):
 		if not committed:
 			PfOps2.loop_slide(session.mesh, data, 0.0)   # RMB: loop stays in the middle (Blender)
+		_reproject_changed(pre)
 		session.rebuild(false)
 		session.commit_undo("Loop Cut and Slide", pre)
 		_redo("Loop Cut and Slide", [["cuts", "Number of Cuts", "int", cuts, 1, 64], ["factor", "Factor", "float", vmodal.value if committed else 0.0, -1.0, 1.0]],
@@ -1781,6 +1847,7 @@ func _do_loopcut(camera: Camera3D, edge: Vector2i, cuts: int) -> void:
 	vmodal.on_key = Callable()
 	vmodal.begin("Loop Cut and Slide", "factor", camera, _mouse, _selection_pivot_world(), func(f: float):
 		PfOps2.loop_slide(session.mesh, data, f)
+		_reproject_changed(pre)
 		session.rebuild(true))
 	vmodal.axis_screen = axis if axis.length() > 1.0 else Vector2(60, 0)
 	vmodal.name_override = "Factor"
@@ -1808,6 +1875,7 @@ func _bevel(verts_only: bool) -> void:
 	sel_after.call()
 	_vm_state = {"finish": func(committed: bool):
 		if committed:
+			_reproject_changed(pre)
 			session.rebuild(false)
 			session.commit_undo("Bevel Vertices" if verts_only else "Bevel", pre)
 			var spec := [["width", "Width", "float", st["w"], 0.0, 1000.0]]
@@ -1820,6 +1888,7 @@ func _bevel(verts_only: bool) -> void:
 	vmodal.on_key = Callable()
 	vmodal.begin("Bevel", "width", _camera, _mouse, _selection_pivot_world(), func(w: float):
 		st["w"] = PfOps2.bevel_update(session.mesh, st["data"], w)
+		_reproject_changed(pre)
 		session.rebuild(true))
 	if not verts_only:
 		vmodal.on_wheel = func(step: int):
@@ -1990,6 +2059,7 @@ func _boolean_edit(op: String) -> void:
 		return
 	session.mesh.from_dict(r["mesh"].to_dict())
 	session.set_selection_result({})
+	_reproject_changed(pre)
 	session.commit_undo("Intersect (Boolean)", pre)
 	msg(PfI18n.t("Boolean %s done") % op)
 
@@ -2268,6 +2338,63 @@ func _toggle_local_view() -> void:
 
 ## Frames the selection with Godot's own "Focus Selection" (F). The event is
 ## queued, so F is let through to Godot for a moment even in Edit Mode.
+## Numpad . (Blender View Selected): Godot's Focus Selection (F) centres the
+## view on a temporary marker at the selected elements, then wheel steps
+## (x1.08 each, Godot's zoom) bring them to a Blender-like framing.
+func _view_selected() -> void:
+	if session == null or _camera == null or _viewing:
+		return
+	var gx: Transform3D = session.node.global_transform
+	var verts: Array = session.selected_verts().keys().filter(func(v): return not session.is_vert_hidden(v))
+	if verts.is_empty():
+		verts = range(session.mesh.verts.size())
+	if verts.is_empty():
+		return
+	var bb := AABB(gx * session.mesh.verts[verts[0]], Vector3.ZERO)
+	for v in verts:
+		bb = bb.expand(gx * session.mesh.verts[v])
+	var center := bb.get_center()
+	var radius := maxf(bb.size.length() * 0.5, 0.05)
+	var cam := _camera
+	var root := EditorInterface.get_edited_scene_root()
+	var marker := Node3D.new()
+	root.add_child(marker, false, Node.INTERNAL_MODE_BACK)
+	marker.global_position = center
+	var sel := EditorInterface.get_selection()
+	var keep: Array = sel.get_selected_nodes()
+	_viewing = true
+	sel.clear()
+	sel.add_node(marker)
+	_frame_selection()
+	for i in 3:
+		await get_tree().process_frame
+	sel.clear()
+	for n in keep:
+		if is_instance_valid(n):
+			sel.add_node(n)
+	marker.queue_free()
+	var last := Vector3.INF
+	for i in 60:
+		await get_tree().process_frame
+		if not is_instance_valid(cam) or cam.global_position.is_equal_approx(last):
+			break
+		last = cam.global_position
+	_viewing = false
+	if not is_instance_valid(cam) or cam.projection != Camera3D.PROJECTION_PERSPECTIVE:
+		return
+	var want := radius / tan(deg_to_rad(cam.fov) * 0.5) * 1.2
+	var steps := roundi(log(cam.global_position.distance_to(center) / want) / log(1.08))
+	var surface := cam.get_viewport().get_parent() as Control
+	var at := surface.get_global_rect().get_center() if surface != null else Vector2.ZERO
+	for i in absi(steps):
+		for pressed in [true, false]:
+			var ev := InputEventMouseButton.new()
+			ev.button_index = MOUSE_BUTTON_WHEEL_UP if steps > 0 else MOUSE_BUTTON_WHEEL_DOWN
+			ev.pressed = pressed
+			ev.position = at
+			ev.global_position = at
+			Input.parse_input_event(ev)
+
 func _frame_selection() -> void:
 	_pass_f_until = Time.get_ticks_msec() + 500
 	for pressed in [true, false]:
@@ -2308,7 +2435,8 @@ func _forward_3d_draw_over_viewport(vc: Control) -> void:
 		var col: Color = settings.get_pref("frame_color")
 		vc.draw_rect(Rect2(0, 0, vc.size.x, w), col)
 		vc.draw_rect(Rect2(0, vc.size.y - w, vc.size.x, w), col)
-		vc.draw_rect(Rect2(vc.size.x - w, 0, w, vc.size.y), col)
+		if not (mat_panel.is_visible_in_tree() and absf(mat_panel.get_global_rect().position.x - vc.get_global_rect().end.x) < 40.0):
+			vc.draw_rect(Rect2(vc.size.x - w, 0, w, vc.size.y), col)
 		var joined: bool = uv_panel.is_visible_in_tree() and absf(vc.get_global_rect().position.x - uv_panel.get_global_rect().end.x) < 40.0
 		if not joined:
 			vc.draw_rect(Rect2(0, 0, w, vc.size.y), col)

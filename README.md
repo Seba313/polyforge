@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo_white.svg">
+    <img src="docs/logo.svg" width="110" alt="Polyforge logo">
+  </picture>
+</p>
+
 # Polyforge
 
 Blender-style mesh and UV editing inside the **Godot 4.7** editor, for people who know Blender:
@@ -108,7 +115,7 @@ Edit Mode with the same shortcuts.
 | `F` | make edge / face; joins selected faces into one (e.g. two triangles into a quad) |
 | `X`, `Delete` | delete menu |
 | `Ctrl+X` | dissolve |
-| `M` | merge menu |
+| `M` | merge menu (unlike Blender, At First / At Last also work after box / circle selecting vertices one by one) |
 | `Shift+N`, `Ctrl+Shift+N`, `Alt+N` | recalculate normals outside / inside, normals menu |
 | `Ctrl+T`, `Alt+J` | triangulate, tris to quads |
 | `Ctrl+V`, `Ctrl+E`, `Ctrl+F` | vertex / edge / face menus |
@@ -126,6 +133,7 @@ Edit Mode with the same shortcuts.
 | `F3` | operator search |
 | `F9` | Adjust Last Operation |
 | RMB | context menu (hold: Godot's fly camera, WASD) |
+| `Numpad .` | View Selected: centre and zoom the view on the selected elements |
 | `Numpad /` | Local View (also in Object Mode) |
 | `Ctrl+PageUp` / `Ctrl+PageDown` | Mesh Edit / UV Edit tab |
 | `Ctrl+Z`, `Ctrl+Shift+Z` | undo / redo (Godot's history; selection changes are steps too) |
@@ -147,8 +155,9 @@ Other keys are blocked in Edit Mode so that Godot does not react unexpectedly. N
   under the mouse. Increment snaps to the grid step.
 - **Overlays:** Statistics, Edge Length (also for the edges being stretched during a transform),
   Face Orientation (blue = front, red = back), Face Normals.
-- **Material:** material slots with face counts, add / remove slots, pick a material, *Assign*,
-  *Select*, *Deselect*. Each slot becomes a separate `ArrayMesh` surface.
+- **Material:** toggles a strip right of the 3D view with one thumbnail per material slot (pick a material
+  or drag one from the FileSystem dock). Icons under each thumbnail: Assign to the selected faces, Select,
+  Deselect, Remove slot; *Add* creates a new slot. Each slot becomes a separate `ArrayMesh` surface.
 - **3D cursor:** also usable as the pivot; new primitives are added there. It is not saved in the scene.
 
 ## UV

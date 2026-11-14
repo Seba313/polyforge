@@ -52,9 +52,6 @@ var mat_btn: Button
 var prop_btn: MenuButton
 var overlays_btn: MenuButton
 var snap_btn: MenuButton
-var mat_panel: PopupPanel
-var mat_list: ItemList
-var mat_picker: EditorResourcePicker
 var density_popup: PopupMenu
 var context_menu: PopupMenu
 var pivot_menu: PopupMenu
@@ -73,6 +70,7 @@ func build(p: EditorPlugin) -> void:
 	# --- Polyforge menu (always visible) ---
 	menu_btn = MenuButton.new()
 	menu_btn.text = "Polyforge"
+	menu_btn.icon = _logo_icon()
 	menu_btn.flat = false
 	menu_btn.theme_type_variation = &"FlatMenuButton"
 	var pm := menu_btn.get_popup()
@@ -287,10 +285,21 @@ func build(p: EditorPlugin) -> void:
 	base.add_child(save_dialog)
 	_build_settings_dialog(base)
 	# Blender names everywhere (the editor would translate only some words).
-	for n in [menu_btn, edit_bar, context_menu, pivot_menu, orient_menu, op_menu, add_menu, mat_panel, search_popup, merge_dist_dialog, density_dialog, settings_dialog]:
+	for n in [menu_btn, edit_bar, context_menu, pivot_menu, orient_menu, op_menu, add_menu, search_popup, merge_dist_dialog, density_dialog, settings_dialog]:
 		if n != null:
 			n.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 			PfI18n.localize(n)
+
+## The Polyforge logo in the editor's text colour (works with light themes).
+func _logo_icon() -> Texture2D:
+	var svg := FileAccess.get_file_as_string("res://addons/polyforge/icons/polyforge.svg")
+	if svg.is_empty():
+		return null
+	var col := EditorInterface.get_editor_theme().get_color(&"font_color", &"Button")
+	var img := Image.new()
+	if img.load_svg_from_string(svg.replace("#ffffff", "#" + col.to_html(false)), 16.0 * EditorInterface.get_editor_scale() / 97.2) != OK:
+		return null
+	return ImageTexture.create_from_image(img)
 
 func teardown() -> void:
 	if menu_btn:
@@ -300,7 +309,7 @@ func teardown() -> void:
 		_flat_menu_row(false)
 		plugin.remove_control_from_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_MENU, edit_bar)
 		edit_bar.queue_free()
-	for n in [mat_panel, context_menu, pivot_menu, orient_menu, op_menu, search_popup, merge_dist_dialog, add_menu, density_dialog, save_dialog, settings_dialog]:
+	for n in [context_menu, pivot_menu, orient_menu, op_menu, search_popup, merge_dist_dialog, add_menu, density_dialog, save_dialog, settings_dialog]:
 		if n != null and is_instance_valid(n):
 			n.queue_free()
 
@@ -350,8 +359,7 @@ func sync() -> void:
 		var axes: Array = plugin.settings.get_pref("mirror_axes")
 		for a in 3:
 			pp.set_item_checked(pp.get_item_index(200 + a), bool(axes[a]))
-		if mat_panel.visible:
-			_fill_materials()
+		mat_btn.button_pressed = bool(plugin.settings.get_pref("material_panel"))
 		tab_mesh.button_pressed = plugin.tab == 0 or s.is_shape()
 		tab_uv.button_pressed = plugin.tab == 1 and not s.is_shape()
 		for i in 3:
@@ -437,71 +445,11 @@ func _flat_menu_row(on: bool) -> void:
 	else:
 		pc.remove_theme_stylebox_override(&"panel")
 
-## Material slots (Blender's Material Properties in Edit Mode).
-func _build_material_panel(base: Control) -> void:
-	mat_btn = Button.new()
-	mat_btn.text = "Material"
-	mat_btn.theme_type_variation = &"FlatButton"
-	mat_btn.tooltip_text = "Material slots: assign to selected faces, select by slot"
-	mat_btn.focus_mode = Control.FOCUS_NONE
-	mat_btn.pressed.connect(open_materials)
+## "Material" toggles the material slot strip right of the 3D view (PfMatPanel).
+func _build_material_panel(_base: Control) -> void:
+	mat_btn = _toggle("Material", "Material slots panel: assign to selected faces, select by slot", null)
+	mat_btn.toggled.connect(func(on): if not _syncing: plugin.run_action("mat_panel", on))
 	edit_bar.add_child(mat_btn)
-	mat_panel = PopupPanel.new()
-	var vb := VBoxContainer.new()
-	mat_panel.add_child(vb)
-	var top := HBoxContainer.new()
-	vb.add_child(top)
-	mat_list = ItemList.new()
-	mat_list.custom_minimum_size = Vector2(260, 120) * EditorInterface.get_editor_scale()
-	mat_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	mat_list.item_selected.connect(func(i):
-		plugin.active_slot = i
-		_fill_materials())
-	top.add_child(mat_list)
-	var side := VBoxContainer.new()
-	top.add_child(side)
-	for it in [["+", "mat_slot_add", "Add Material Slot"], ["−", "mat_slot_remove", "Remove Material Slot"]]:
-		var b := Button.new()
-		b.text = it[0]
-		b.tooltip_text = it[2]
-		b.pressed.connect(plugin.run_action.bind(it[1], null))
-		side.add_child(b)
-	mat_picker = EditorResourcePicker.new()
-	mat_picker.base_type = "Material"
-	mat_picker.resource_changed.connect(func(r): plugin.run_action("mat_set", r))
-	vb.add_child(mat_picker)
-	var row := HBoxContainer.new()
-	vb.add_child(row)
-	for it in [["Assign", "mat_assign"], ["Select", "mat_select"], ["Deselect", "mat_deselect"]]:
-		var b := Button.new()
-		b.text = it[0]
-		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b.pressed.connect(plugin.run_action.bind(it[1], null))
-		row.add_child(b)
-	base.add_child(mat_panel)
-
-func open_materials() -> void:
-	_fill_materials()
-	mat_panel.reset_size()
-	mat_panel.position = Vector2i(mat_btn.get_screen_position() + Vector2(0, mat_btn.size.y))
-	mat_panel.popup()
-
-func _fill_materials() -> void:
-	var m = plugin.session.mesh
-	var n: int = PfOps2.slot_count(m)
-	plugin.active_slot = clampi(plugin.active_slot, 0, n - 1)
-	var used := {}
-	for s in m.face_mat:
-		used[s] = used.get(s, 0) + 1
-	mat_list.clear()
-	for i in n:
-		var mat: Material = m.materials[i] if i < m.materials.size() else null
-		var label := PfI18n.t("(empty)")
-		if mat != null:
-			label = mat.resource_name if mat.resource_name != "" else (mat.resource_path.get_file() if mat.resource_path != "" else mat.get_class())
-		mat_list.add_item(PfI18n.t("%d: %s  ·  %d faces") % [i, label, used.get(i, 0)])
-	mat_list.select(plugin.active_slot)
-	mat_picker.edited_resource = m.materials[plugin.active_slot] if plugin.active_slot < m.materials.size() else null
 
 func popup_at(menu: PopupMenu, screen_pos: Vector2) -> void:
 	menu.reset_size()

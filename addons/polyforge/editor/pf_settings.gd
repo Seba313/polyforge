@@ -30,6 +30,7 @@ const DEFAULTS := {
 	"prop_size": 1.0,
 	"mirror_axes": [false, false, false],
 	"overlay_stats": false,
+	"material_panel": false,
 	"snap_on": false,
 	"snap_target": "increment",
 	"overlay_edge_length": false,

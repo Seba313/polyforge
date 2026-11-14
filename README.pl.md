@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo_white.svg">
+    <img src="docs/logo.svg" width="110" alt="Polyforge logo">
+  </picture>
+</p>
+
 # Polyforge
 
 Edycja siatki w Godot 4.7 tak jak w Blenderze, dla osób, które znają Blendera:
@@ -125,7 +132,7 @@ wchodzi w tryb edycji z tymi samymi skrótami (zaznaczanie, `G`/`R`/`S`, ukrywan
 | `F` | utwórz krawędź (2 vertexy) / ścianę (pętla krawędzi albo 3+ vertexy) |
 | `X`, `Delete` | menu Delete: Vertices / Edges / Faces / Only Edges & Faces / Only Faces / Dissolve… |
 | `Ctrl+X` | dissolve wg trybu (vertexy / krawędzie / ściany) |
-| `M` | menu Merge: At Center / At First / At Last / Collapse / By Distance… |
+| `M` | menu Merge: At Center / At First / At Last / Collapse / By Distance… (w przeciwieństwie do Blendera At First / At Last działa też po zaznaczaniu wierzchołków po kolei prostokątem lub okręgiem) |
 | `Shift+N`, `Ctrl+Shift+N`, `Alt+N` | normalne na zewnątrz / do środka / menu (Flip…) |
 | `Ctrl+T`, `Alt+J` | triangulacja / Tris to Quads |
 | `Ctrl+V`, `Ctrl+E`, `Ctrl+F` | menu Vertex / Edge / Face (m.in. Smooth Vertices, Mark Sharp/Seam, Shade Smooth/Flat) |
@@ -138,6 +145,7 @@ wchodzi w tryb edycji z tymi samymi skrótami (zaznaczanie, `G`/`R`/`S`, ukrywan
 | `Alt+F` | tryb Focus: przyciemnia wszystko poza edytowanym obiektem |
 | `F9` | Adjust Last Operation (panel w lewym dolnym rogu pojawia się sam) |
 | prawy przycisk | menu kontekstowe (przytrzymanie: latanie kamerą Godota, WASD) |
+| `Numpad .` | View Selected: wyśrodkowanie i przybliżenie widoku na zaznaczonych elementach |
 | `Numpad /` | Local View (także w trybie obiektowym) |
 | `Ctrl+PageUp` / `Ctrl+PageDown` | zakładka Mesh Edit / UV Edit |
 | `Shift+G` | Select Similar (vertexy: Normal, liczba krawędzi/ścian; krawędzie: Length, Direction, Face Angles, Seam, Sharp…; ściany: Material, Area, Polygon Sides, Perimeter, Normal, Co-planar, Flat/Smooth) |
@@ -181,11 +189,10 @@ Orientation (niebieski = przód, czerwony = tył ściany), Face Normals.
 **Kursor 3D** jest też pivotem (*3D Cursor* w menu `.`) i miejscem, w którym `Shift+A`
 oraz *Polyforge → Add Mesh* dodają prymitywy. Nie jest zapisywany w scenie.
 
-**Materiały** (przycisk *Material* na pasku, jak Material Properties w Blenderze): lista
-slotów z liczbą ścian, `+`/`−` dodaje / usuwa slot (ściany usuniętego slotu przechodzą do
-poprzedniego), wybór materiału dla aktywnego slotu, *Assign* przypisuje go zaznaczonym
-ścianom, *Select* / *Deselect* zaznacza ściany slotu. Każdy slot to osobna powierzchnia
-`ArrayMesh` z materiałem.
+**Materiały** (przycisk *Material* na pasku): po prawej stronie widoku 3D pojawia się pionowy panel
+z miniaturą materiału każdego slotu (wybór materiału albo przeciągnięcie z panelu FileSystem). Pod miniaturą
+ikony: przypisz do zaznaczonych ścian, zaznacz, odznacz, usuń slot (ściany usuniętego slotu przechodzą do
+poprzedniego); *Add* dodaje slot. Każdy slot to osobna powierzchnia `ArrayMesh` z materiałem.
 
 **Right Click Select** (ustawienia): prawy przycisk zaznacza, `W` otwiera menu kontekstowe.
 
