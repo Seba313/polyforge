@@ -1494,6 +1494,15 @@ func _test_stage4(root: Node) -> void:
 	pf.session.select_many([v], "set")
 	pf.run_action("snap", "cursor_sel")
 	check(pf.cursor3d.is_equal_approx(Vector3(-0.6, 0, 0)), "Cursor to Selected")
+	var orig_v: Vector3 = pf.session.mesh.verts[v]
+	pf.session.mesh.verts[v] = Vector3(-0.63, 0.04, 0.12)
+	pf.run_action("snap", "sel_grid")
+	check(pf.session.mesh.verts[v].is_equal_approx(Vector3(-0.6, 0, 0.1)), "Selection to Grid (0.1)")
+	await undo(grid)
+	pf.session.mesh.verts[v] = orig_v
+	pf.cursor3d = Vector3(0.26, 0.04, -0.33)
+	pf.run_action("snap", "cursor_grid")
+	check(pf.cursor3d.is_equal_approx(Vector3(0.3, 0, -0.3)), "Cursor to Grid")
 	# pivot: 3D cursor
 	pf.cursor3d = Vector3(-1, 0, 0)
 	pf.run_action("pivot", "cursor")

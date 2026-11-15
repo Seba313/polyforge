@@ -150,7 +150,7 @@ wchodzi w tryb edycji z tymi samymi skrótami (zaznaczanie, `G`/`R`/`S`, ukrywan
 | `Ctrl+PageUp` / `Ctrl+PageDown` | zakładka Mesh Edit / UV Edit |
 | `Shift+G` | Select Similar (vertexy: Normal, liczba krawędzi/ścian; krawędzie: Length, Direction, Face Angles, Seam, Sharp…; ściany: Material, Area, Polygon Sides, Perimeter, Normal, Co-planar, Flat/Smooth) |
 | `Shift`+prawy | ustaw kursor 3D (na powierzchni pod myszą, inaczej w płaszczyźnie widoku) |
-| `Shift+S` | menu Snap: Selection to Cursor (Keep Offset) / to Active, Cursor to Selected / World Origin / Active |
+| `Shift+S` | menu Snap: Selection to Cursor (Keep Offset) / to Active / to Grid, Cursor to Selected / World Origin / Active / Grid |
 | `O`, `Shift+O` | proportional editing / menu zaniku (Smooth, Sphere, Root, Inverse Square, Sharp, Linear, Constant) |
 | `Shift+Tab` / `Ctrl+Shift+Tab` | przyciąganie wł./wył. / menu Snap To: Increment, Vertex, Edge, Face (`Ctrl` w trakcie `G`/`R`/`S` odwraca) |
 | `Ctrl+M` | Mirror: X/Y/Z Global lub Local względem pivota (całe zaznaczone ściany zachowują normalne) |

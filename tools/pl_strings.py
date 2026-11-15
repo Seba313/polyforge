@@ -123,7 +123,7 @@ PL = {
 "Mirror": "Lustro", "X Global": "X globalnie", "Y Global": "Y globalnie", "Z Global": "Z globalnie", "X Local": "X lokalnie", "Y Local": "Y lokalnie", "Z Local": "Z lokalnie",
 # 3D cursor / snap menu
 "Selection to Cursor": "Zaznaczenie do kursora", "Selection to Cursor (Keep Offset)": "Zaznaczenie do kursora (zachowaj przesunięcie)", "Selection to Active": "Zaznaczenie do aktywnego",
-"Cursor to Selected": "Kursor do zaznaczenia", "Cursor to World Origin": "Kursor do środka świata", "Cursor to Active": "Kursor do aktywnego", "No active element": "Brak aktywnego elementu",
+"Cursor to Selected": "Kursor do zaznaczenia", "Cursor to World Origin": "Kursor do środka świata", "Cursor to Active": "Kursor do aktywnego", "Selection to Grid": "Zaznaczenie do siatki", "Cursor to Grid": "Kursor do siatki", "No active element": "Brak aktywnego elementu",
 "Snap Menu": "Menu przyciągania", "View Selected": "Pokaż zaznaczone",
 # messages
 "Removed %d vertices": "Usunięto wierzchołki: %d",

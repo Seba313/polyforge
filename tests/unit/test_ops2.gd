@@ -19,6 +19,7 @@ func _init() -> void:
 	_loopcut()
 	_bevel()
 	_bevel_verts()
+	_bevel_split_end()
 	_separate_join()
 	_multi_split()
 	print("RESULT: ", "PASS" if fails == 0 else "FAIL (%d)" % fails)
@@ -208,3 +209,35 @@ func _multi_split() -> void:
 	solid(parts[0], "object 0 back in its own space")
 	solid(parts[1], "mirrored object 1 back in its own space")
 	check(parts[1].bounds().size.is_equal_approx(Vector3(2, 2, 2)) and parts[0].bounds().size.is_equal_approx(Vector3(2, 3, 2)), "local sizes correct")
+
+
+func _oriented(m) -> bool:
+	var seen := {}
+	for f in m.faces:
+		for k in f.size():
+			var e := Vector2i(f[k], f[(k + 1) % f.size()])
+			if seen.has(e):
+				return false
+			seen[e] = true
+	return true
+
+func _bevel_split_end() -> void:
+	print("== bevel: end region split into several faces (inner L corner)")
+	for seg in [1, 3]:
+		var m = PfMesh.new()
+		var poly := [Vector2(0, 0), Vector2(1, 0), Vector2(1, 0.2), Vector2(0.2, 0.2), Vector2(0.2, 1), Vector2(0, 1)]
+		for p in poly:
+			m.add_vertex(Vector3(p.x, p.y, 0.0))
+		for p in poly:
+			m.add_vertex(Vector3(p.x, p.y, 1.0))
+		m.add_face(PackedInt32Array([6, 7, 8, 9]))
+		m.add_face(PackedInt32Array([6, 9, 10, 11]))
+		m.add_face(PackedInt32Array([3, 2, 1, 0]))
+		m.add_face(PackedInt32Array([5, 4, 3, 0]))
+		for i in 6:
+			var j := (i + 1) % 6
+			m.add_face(PackedInt32Array([i, j, j + 6, i + 6]))
+		var d: Dictionary = PfOps2.bevel_edges(m, {PfMesh.ekey(3, 9): true}, seg)
+		PfOps2.bevel_update(m, d, 0.1)
+		m.invalidate()
+		check(closed(m) and _oriented(m) and m.validate() == "", "%d segment(s): no holes, consistent winding" % seg)

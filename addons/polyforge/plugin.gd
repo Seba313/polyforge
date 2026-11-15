@@ -1136,7 +1136,8 @@ func run_action(action: String, arg: Variant = null) -> void:
 			ui.sync()
 		"snap_menu":
 			_menu_at("Snap", [["Selection to Cursor", "snap", "sel_cursor"], ["Selection to Cursor (Keep Offset)", "snap", "sel_cursor_offset"],
-				["Selection to Active", "snap", "sel_active"], ["-"], ["Cursor to Selected", "snap", "cursor_sel"],
+				["Selection to Active", "snap", "sel_active"], ["Selection to Grid", "snap", "sel_grid"], ["-"], ["Cursor to Selected", "snap", "cursor_sel"],
+				["Cursor to Grid", "snap", "cursor_grid"],
 				["Cursor to World Origin", "snap", "cursor_origin"], ["Cursor to Active", "snap", "cursor_active"]])
 		"snap":
 			_snap(str(arg))
@@ -2362,6 +2363,7 @@ func _snap(kind: String) -> void:
 	if kind.begins_with("cursor_"):
 		match kind:
 			"cursor_origin": cursor3d = Vector3.ZERO
+			"cursor_grid": cursor3d = cursor3d.snapped(Vector3.ONE * float(settings.get_pref("snap_increment")))
 			"cursor_sel": if med != null: cursor3d = xf * (med as Vector3)
 			"cursor_active": if act != null: cursor3d = xf * (act as Vector3)
 		update_overlays()
@@ -2371,6 +2373,12 @@ func _snap(kind: String) -> void:
 		return
 	var target: Vector3 = act if kind == "sel_active" else xf.affine_inverse() * cursor3d
 	var before: Dictionary = session.snapshot()
+	if kind == "sel_grid":
+		var step := Vector3.ONE * float(settings.get_pref("snap_increment"))
+		for v in session.selected_verts():
+			session.mesh.verts[v] = xf.affine_inverse() * (xf * session.mesh.verts[v]).snapped(step)
+		session.commit_undo("Snap Selection", before)
+		return
 	for v in session.selected_verts():
 		session.mesh.verts[v] = session.mesh.verts[v] - (med as Vector3) + target if kind == "sel_cursor_offset" else target
 	session.commit_undo("Snap Selection", before)

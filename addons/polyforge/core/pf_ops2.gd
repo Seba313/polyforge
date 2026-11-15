@@ -525,6 +525,30 @@ static func bevel_edges(m, se: Dictionary, segments := 1) -> Dictionary:
 					m.uv2s[fi] = u2
 					m.colors[fi] = PackedColorArray()
 					break
+	# One beveled edge, but the end region is split into several faces: the
+	# vertex stays and the triangle (profile, vertex) needs its own face.
+	m.invalidate()
+	m.ensure_topology()
+	for c in caps:
+		var v: int = c[0]
+		if c[3] != 1 or m.vert_faces(v).is_empty():
+			continue
+		for e in sel:
+			if e.x != v and e.y != v:
+				continue
+			var row: Array = profile[[e, v]]
+			var a: int = row[0]
+			var b: int = row[row.size() - 1]
+			if m.edge_id(ekey(v, a)) < 0 or m.edge_id(ekey(v, b)) < 0:
+				continue
+			var pts := PackedInt32Array(row)
+			pts.append(v)
+			for fi in m.vert_faces(v):
+				var k: int = m.corner_of(fi, v)
+				if k >= 0 and m.faces[fi][(k + 1) % m.faces[fi].size()] == a:
+					pts.reverse()
+					break
+			new_faces[PfOps.add_face(m, pts)] = true
 	# Caps where 3+ distinct points remain around a vertex.
 	for c in caps:
 		var v: int = c[0]

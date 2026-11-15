@@ -125,7 +125,7 @@ Edit Mode with the same shortcuts.
 | `P` | separate (selection / loose parts / material) |
 | `U` | UV menu |
 | `Shift`+RMB | place the 3D cursor |
-| `Shift+S` | snap menu (selection ↔ cursor) |
+| `Shift+S` | snap menu (selection ↔ cursor, selection / cursor to grid: Ctrl snap increment from the settings) |
 | `O`, `Shift+O` | proportional editing, falloff menu |
 | `Shift+Tab`, `Ctrl+Shift+Tab` | snapping on/off, snap target (Increment / Vertex / Edge / Face) |
 | `Ctrl+M` | mirror (X/Y/Z, Global or Local) |

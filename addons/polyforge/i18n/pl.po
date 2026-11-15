@@ -285,6 +285,9 @@ msgstr "Rozmiar sześcianu"
 msgid "Cursor to Active"
 msgstr "Kursor do aktywnego"
 
+msgid "Cursor to Grid"
+msgstr "Kursor do siatki"
+
 msgid "Cursor to Origin"
 msgstr "Kursor do początku"
 
@@ -1097,6 +1100,9 @@ msgstr "Zaznaczenie do kursora"
 
 msgid "Selection to Cursor (Keep Offset)"
 msgstr "Zaznaczenie do kursora (zachowaj przesunięcie)"
+
+msgid "Selection to Grid"
+msgstr "Zaznaczenie do siatki"
 
 msgid "Separate"
 msgstr "Rozdziel"
